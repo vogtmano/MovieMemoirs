@@ -20,6 +20,7 @@
 		84837ED32A9E1FCE002AEFC2 /* MovieVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84837ED22A9E1FCE002AEFC2 /* MovieVC.swift */; };
 		84837ED52A9E23FA002AEFC2 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84837ED42A9E23FA002AEFC2 /* NetworkManager.swift */; };
 		84837ED72A9E28C9002AEFC2 /* MovieImplementation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84837ED62A9E28C8002AEFC2 /* MovieImplementation.swift */; };
+		84C9BCE42B307C640035991A /* MMSearchVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C9BCE32B307C640035991A /* MMSearchVM.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		84837ED22A9E1FCE002AEFC2 /* MovieVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieVC.swift; sourceTree = "<group>"; };
 		84837ED42A9E23FA002AEFC2 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		84837ED62A9E28C8002AEFC2 /* MovieImplementation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieImplementation.swift; sourceTree = "<group>"; };
+		84C9BCE32B307C640035991A /* MMSearchVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMSearchVM.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,7 +141,7 @@
 		847215132A865CA400295C51 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				845A68CA2A83A3FC00F14E2E /* MMSearchVC.swift */,
+				84C9BCE22B306DA10035991A /* MMSearch */,
 				847215142A865D1600295C51 /* CollectionVC.swift */,
 				84837ED22A9E1FCE002AEFC2 /* MovieVC.swift */,
 				847215162A865D4800295C51 /* FavoritesVC.swift */,
@@ -161,6 +163,15 @@
 				84837ED42A9E23FA002AEFC2 /* NetworkManager.swift */,
 			);
 			path = Manager;
+			sourceTree = "<group>";
+		};
+		84C9BCE22B306DA10035991A /* MMSearch */ = {
+			isa = PBXGroup;
+			children = (
+				845A68CA2A83A3FC00F14E2E /* MMSearchVC.swift */,
+				84C9BCE32B307C640035991A /* MMSearchVM.swift */,
+			);
+			path = MMSearch;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,6 +310,7 @@
 				845A68C72A83A3FC00F14E2E /* AppDelegate.swift in Sources */,
 				845A68C92A83A3FC00F14E2E /* SceneDelegate.swift in Sources */,
 				84837ED32A9E1FCE002AEFC2 /* MovieVC.swift in Sources */,
+				84C9BCE42B307C640035991A /* MMSearchVM.swift in Sources */,
 				847215172A865D4800295C51 /* FavoritesVC.swift in Sources */,
 				847215152A865D1600295C51 /* CollectionVC.swift in Sources */,
 			);

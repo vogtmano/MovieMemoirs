@@ -14,29 +14,32 @@ class MMSearchVC: UIViewController {
     
     var imageView: UIImageView!
     var textField: UITextField!
-    
-    var currentAnimation = 0
-    var isAnimating = true
-    var timer: Timer?
+
+    let viewModel = MMSearchVM()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setLogo()
         setTextField()
-        startAutomaticAnimation()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(tapGesture)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.startAutomaticAnimation()
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        timer?.invalidate()
+        viewModel.timer?.invalidate()
     }
     
     init() {
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -98,56 +101,16 @@ class MMSearchVC: UIViewController {
         ])
     }
     
-    func startAutomaticAnimation() {
-        if timer == nil || !timer!.isValid {
-            timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true, block: { [weak self] _ in self?.performAnimation() })
-        }
-    }
-    
     @objc func symbolTapped() {
-        guard let title = textField.text, !title.isEmpty else {
-            let ac = UIAlertController(title: title, message: "You need to provide a title", preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            present(ac, animated: true)
-            return
-        }
-        
-        let collection = CollectionVC()
-        collection.movieTitle = title
-        performSegue(withIdentifier: Segue.toMovieVC, sender: collection)
-    }
-    
-    @objc func performAnimation() {
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
-            switch self.currentAnimation {
-            case 1, 3, 5, 7:
-                self.imageView.transform = .identity
-            case 0:
-                self.imageView.transform = CGAffineTransform(translationX: -19, y: -19)
-            case 2:
-                self.imageView.transform = CGAffineTransform(translationX: 19, y: -19)
-            case 4:
-                self.imageView.transform = CGAffineTransform(translationX: 19, y: 19)
-            case 6:
-                self.imageView.transform = CGAffineTransform(translationX: -19, y: 19)
-            default:
-                break
-            }
-        }, completion: { _ in })
-        
-        currentAnimation += 1
-        
-        if currentAnimation > 7 {
-            currentAnimation = 0
-        }
+        viewModel.symbolTapped(text: textField.text)
     }
     
     @objc func toggleAnimation() {
-        isAnimating.toggle()
-        if isAnimating {
-            startAutomaticAnimation()
+        viewModel.isAnimating.toggle()
+        if viewModel.isAnimating {
+            viewModel.startAutomaticAnimation()
         } else {
-            timer?.invalidate()
+            viewModel.timer?.invalidate()
         }
     }
     
@@ -171,8 +134,24 @@ class MMSearchVC: UIViewController {
     }
 }
 
-private extension MMSearchVC {
-    // What's in here??
+extension MMSearchVC: MMSearchVMDelegates {
+    func setImageTransformToIdentity() {
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
+            self.imageView.transform = .identity
+        }, completion: { _ in })
+    }
+    
+    func setImage(to transform: CGAffineTransform) {
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
+            self.imageView.transform = transform
+        }, completion: { _ in })
+    }
+    
+    func presentAlert() {
+        let ac = UIAlertController(title: title, message: "You need to provide a title", preferredStyle: .alert)
+        ac.addAction(UIAlertAction(title: "OK", style: .default))
+        present(ac, animated: true)
+    }
 }
 
 extension MMSearchVC: UITextFieldDelegate {
