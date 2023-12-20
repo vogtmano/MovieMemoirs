@@ -8,7 +8,25 @@
 import UIKit
 import Foundation
 
-struct Movie: Decodable {
+struct DecodingMovie: Decodable {
+    enum CodingKeys: String, CodingKey {
+        case search = "Search"
+    }
+    
+    let search: [MovieThumbnail]
+}
+
+struct MovieThumbnail: Decodable, Hashable {
+    var title: String
+    var poster: String
+    
+    enum CodingKeys: String, CodingKey {
+        case title = "Title"
+        case poster = "Poster"
+    }
+}
+
+struct Movie: Decodable, Hashable {
     var title: String
     var year: String
     var genre: String

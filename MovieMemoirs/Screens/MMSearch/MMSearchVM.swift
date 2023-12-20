@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol MMSearchVMDelegates: AnyObject {
     func presentAlert()
@@ -15,6 +16,7 @@ protocol MMSearchVMDelegates: AnyObject {
 
 class MMSearchVM {
     weak var delegate: MMSearchVMDelegates?
+    weak var navigationController: UINavigationController?
     var timer: Timer?
     var currentAnimation = 0
     var isAnimating = true
@@ -27,7 +29,12 @@ class MMSearchVM {
         
         let collection = CollectionVC()
         collection.movieTitle = title
-//        performSegue(withIdentifier: Segue.toMovieVC, sender: collection)
+        
+        if let navigationController {
+            navigationController.pushViewController(collection, animated: true)
+        } else {
+          print("Warning: No navigation controller found.")
+        }
     }
     
     func startAutomaticAnimation() {

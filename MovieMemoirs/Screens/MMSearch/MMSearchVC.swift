@@ -15,7 +15,7 @@ class MMSearchVC: UIViewController {
     var imageView: UIImageView!
     var textField: UITextField!
 
-    let viewModel = MMSearchVM()
+    let viewModel: MMSearchVM
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +23,7 @@ class MMSearchVC: UIViewController {
         setTextField()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(tapGesture)
     }
@@ -37,7 +38,8 @@ class MMSearchVC: UIViewController {
         viewModel.timer?.invalidate()
     }
     
-    init() {
+    init(viewModel: MMSearchVM) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
     }
@@ -75,6 +77,7 @@ class MMSearchVC: UIViewController {
         textField.borderStyle = .roundedRect
         textField.layer.cornerRadius = 12
         textField.layer.borderWidth = 1.5
+        textField.clipsToBounds = true
         textField.layer.borderColor = UIColor.lightGray.cgColor
         textField.textAlignment = .center
         textField.autocorrectionType = .no

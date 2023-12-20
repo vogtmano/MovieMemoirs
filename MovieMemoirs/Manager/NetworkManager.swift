@@ -5,7 +5,7 @@
 //  Created by Maks Vogtman on 29/08/2023.
 //
 
-import Foundation
+import UIKit
 
 class NetworkManager {
     enum SearchType {
@@ -29,14 +29,11 @@ class NetworkManager {
     
     static let shared = NetworkManager()
     
-    // http://www.omdbapi.com/?i=tt3896198&apikey=7d26b674 example
     private let apiKey = "&apikey=7d26b674"
     private let baseURL = "https://www.omdbapi.com/?"
     
-    private init() {}
-    
-    func fetchFilms(with title: String) async -> Result<Movie, NetworkError> {
-        let urlString = baseURL + SearchType.title.searchSuffix + title + apiKey
+    func fetchFilms(with title: String) async -> Result<[MovieThumbnail], NetworkError> {
+        let urlString = baseURL + SearchType.listOfTitles.searchSuffix + title + apiKey
         guard let url = URL(string: urlString) else {
             return .failure(NetworkError.invalidURL)
         }
@@ -44,8 +41,9 @@ class NetworkManager {
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decoder = JSONDecoder()
-            let movies = try decoder.decode(Movie.self, from: data)
-            return .success(movies)
+            let decodingObject = try decoder.decode(DecodingMovie.self, from: data)
+            return .success(decodingObject.search)
+            
         } catch {
             return .failure(NetworkError.networkError)
         }
@@ -64,6 +62,19 @@ class NetworkManager {
             return .success(movie)
         } catch {
             return .failure(NetworkError.networkError)
+        }
+    }
+    
+    func fetchPoster(urlString: String) async -> UIImage? {
+        guard let url = URL(string: urlString) else {
+            return nil
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            return UIImage(data: data)
+        } catch {
+            return nil
         }
     }
 }

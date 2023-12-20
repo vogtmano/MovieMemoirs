@@ -30,10 +30,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func configureSearchNC() -> UINavigationController {
-        let searchVC = MMSearchVC()
+        let viewModel = MMSearchVM()
+        let searchVC = MMSearchVC(viewModel: viewModel)
         searchVC.title = "Search"
         searchVC.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 0)
-        return UINavigationController(rootViewController: searchVC)
+        let navigationController = UINavigationController(rootViewController: searchVC)
+        viewModel.navigationController = navigationController
+        return navigationController
     }
     
     func configureFavoritesNC() -> UINavigationController {
