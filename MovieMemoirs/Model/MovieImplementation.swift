@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Foundation
 
 struct DecodingMovie: Decodable {
     enum CodingKeys: String, CodingKey {
