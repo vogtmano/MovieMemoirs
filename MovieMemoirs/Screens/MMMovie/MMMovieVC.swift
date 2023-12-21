@@ -21,6 +21,4 @@ class MovieVC: UIViewController {
         super.viewDidLoad()
         
     }
-
-
 }

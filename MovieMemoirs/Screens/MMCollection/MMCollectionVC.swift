@@ -87,6 +87,7 @@ class CollectionVC: UICollectionViewController {
     }
  
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        movies[indexPath.item]
+        let movieVC = MovieVC()
+        navigationController?.pushViewController(movieVC, animated: true)
     }
 }

@@ -5,7 +5,6 @@
 //  Created by Maks Vogtman on 18/12/2023.
 //
 
-import Foundation
 import UIKit
 
 protocol MMSearchVMDelegates: AnyObject {
@@ -44,7 +43,6 @@ class MMSearchVM {
     }
     
     @objc func performAnimation() {
-        
         switch self.currentAnimation {
         case 1, 3, 5, 7:
             delegate?.setImageTransformToIdentity()

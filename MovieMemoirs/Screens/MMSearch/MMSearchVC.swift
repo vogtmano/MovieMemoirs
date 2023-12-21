@@ -12,10 +12,9 @@ class MMSearchVC: UIViewController {
         static let toMovieVC = "showMovies"
     }
     
+    let viewModel: MMSearchVM
     var imageView: UIImageView!
     var textField: UITextField!
-
-    let viewModel: MMSearchVM
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -105,6 +104,10 @@ class MMSearchVC: UIViewController {
     }
     
     @objc func symbolTapped() {
+        if textField.isFirstResponder {
+            textField.resignFirstResponder()
+        }
+        
         viewModel.symbolTapped(text: textField.text)
     }
     
@@ -159,8 +162,11 @@ extension MMSearchVC: MMSearchVMDelegates {
 
 extension MMSearchVC: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        performSegue(withIdentifier: "showMovies", sender: nil)
+        if textField.isFirstResponder {
+            textField.resignFirstResponder()
+        }
+        
+        viewModel.symbolTapped(text: textField.text)
         return true
     }
 }
