@@ -12,23 +12,19 @@ class CollectionVC: UICollectionViewController {
         case main
     }
     
-    var movieTitle: String = "" {
-        didSet {
-            print(movieTitle)
-        }
-    }
-    
-    var movies: [MovieThumbnail] = []
     var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail>?
+    let viewModel: MMCollectionVM
     
-    init() {
-        super.init(collectionViewLayout: UICollectionViewCompositionalLayout { sectionIndex, environment in
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(70))
+    init(viewModel: MMCollectionVM) {
+        self.viewModel = viewModel
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout { _,_ in
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            let interItemSpacing: CGFloat = 2.0
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(90))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), 
+                                                   heightDimension: .absolute(90))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            group.interItemSpacing = .fixed(interItemSpacing)
+            group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
             let section = NSCollectionLayoutSection(group: group)
             return section
         })
@@ -66,11 +62,11 @@ class CollectionVC: UICollectionViewController {
     func fetchMovies() {
         Task { @MainActor in
             do {
-                let result = await NetworkManager.shared.fetchFilms(with: movieTitle)
+                let result = await NetworkManager.shared.fetchFilms(with: viewModel.movieTitle)
                 
                 switch result {
                 case .success(let fetchedMovies):
-                    self.movies = fetchedMovies
+                    self.viewModel.movies = fetchedMovies
                     applySnapshot()
                 case .failure(let error):
                     print("Error fetching movies: \(error)")
@@ -82,12 +78,13 @@ class CollectionVC: UICollectionViewController {
     func applySnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(movies, toSection: .main)
+        snapshot.appendItems(viewModel.movies, toSection: .main)
         dataSource?.apply(snapshot)
     }
  
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let movieVC = MovieVC()
+        let viewModel = MMMovieVM(id: self.viewModel.movies[indexPath.item].id)
+        let movieVC = MovieVC(viewModel: viewModel)
         navigationController?.pushViewController(movieVC, animated: true)
     }
 }

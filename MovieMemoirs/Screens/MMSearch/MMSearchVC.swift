@@ -12,10 +12,10 @@ class MMSearchVC: UIViewController {
         static let toMovieVC = "showMovies"
     }
     
-    let viewModel: MMSearchVM
     var imageView: UIImageView!
     var textField: UITextField!
     
+    let viewModel: MMSearchVM
     override func viewDidLoad() {
         super.viewDidLoad()
         setLogo()

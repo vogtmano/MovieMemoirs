@@ -8,8 +8,30 @@
 import UIKit
 
 class MovieVC: UIViewController {
+    var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        return scrollView
+    }()
     
-    init() {
+    lazy var mainStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 20
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    var posterImage = UIImageView()
+    var plotTextView = UITextView()
+    var yearLabel = UILabel()
+    var genreLabel = UILabel()
+    var directorLabel = UILabel()
+    
+    let viewModel: MMMovieVM
+    
+    init(viewModel: MMMovieVM) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -20,5 +42,22 @@ class MovieVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        configureUI()
+    }
+}
+
+private extension MovieVC {
+    func configureUI() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(mainStackView)
+        NSLayoutConstraint.activate([
+            scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            
+            mainStackView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            mainStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            mainStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+        ])
     }
 }

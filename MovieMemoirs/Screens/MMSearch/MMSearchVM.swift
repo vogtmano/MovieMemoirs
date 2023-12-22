@@ -26,8 +26,10 @@ class MMSearchVM {
             return
         }
         
-        let collection = CollectionVC()
-        collection.movieTitle = title
+        let viewModel = MMCollectionVM()
+        let collection = CollectionVC(viewModel: viewModel)
+        viewModel.navigationController = navigationController
+        collection.viewModel.movieTitle = title
         
         if let navigationController {
             navigationController.pushViewController(collection, animated: true)

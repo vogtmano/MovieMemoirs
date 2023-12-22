@@ -11,6 +11,7 @@ class NetworkManager {
     enum SearchType {
         case title
         case listOfTitles
+        case id
         
         var searchSuffix: String {
             switch self {
@@ -18,6 +19,8 @@ class NetworkManager {
                 "t="
             case .listOfTitles:
                 "s="
+            case .id:
+                "i="
             }
         }
     }
@@ -77,4 +80,22 @@ class NetworkManager {
             return nil
         }
     }
+    
+    func fetchFilm(by id: String) async -> Result<Movie?, NetworkError> {
+        let urlString = baseURL + SearchType.id.searchSuffix + id + apiKey
+        guard let url = URL(string: urlString) else {
+            return .failure(NetworkError.invalidURL)
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let decoder = JSONDecoder()
+            let movie = try decoder.decode(Movie.self, from: data)
+            return .success(movie)
+        } catch {
+            return .failure(NetworkError.networkError)
+        }
+    }
+    
+    
 }

@@ -18,10 +18,12 @@ struct DecodingMovie: Decodable {
 struct MovieThumbnail: Decodable, Hashable {
     var title: String
     var poster: String
+    var id: String
     
     enum CodingKeys: String, CodingKey {
         case title = "Title"
         case poster = "Poster"
+        case id = "imdbID"
     }
 }
 
