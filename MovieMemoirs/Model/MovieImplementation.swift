@@ -31,6 +31,7 @@ struct Movie: Decodable, Hashable {
     var title: String
     var year: String
     var genre: String
+    var released: String
     var director: String
     var isFavourite: Bool = false
     var actors: String
@@ -38,7 +39,8 @@ struct Movie: Decodable, Hashable {
     var awards: String
     var posterUrl: String
     var imdbID: String
-    var boxOffice: String?
+    var imdbRating: String
+    var boxOffice: String
     
     var posterImage: UIImage?
     
@@ -46,12 +48,14 @@ struct Movie: Decodable, Hashable {
         case title = "Title"
         case year = "Year"
         case genre = "Genre"
+        case released = "Released"
         case director = "Director"
         case actors = "Actors"
         case plot = "Plot"
         case awards = "Awards"
         case posterUrl = "Poster"
         case imdbID
+        case imdbRating = "imdbRating"
         case boxOffice = "BoxOffice"
     }
 }

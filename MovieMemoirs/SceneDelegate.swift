@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureTabBarControler() -> UITabBarController {
         let tabBar = UITabBarController()
-        tabBar.viewControllers = [configureSearchNC(), configureFavoritesNC()]
+        tabBar.viewControllers = [configureSearchNC(), configureFavouritesNC()]
         return tabBar
     }
     
@@ -38,8 +38,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return navigationController
     }
     
-    func configureFavoritesNC() -> UINavigationController {
-        let favVC = FavoritesVC()
+    func configureFavouritesNC() -> UINavigationController {
+        let viewModel = MMFavouritesVM()
+        let favVC = MMFavouritesVC(viewModel: viewModel)
         favVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
         return UINavigationController(rootViewController: favVC)
     }

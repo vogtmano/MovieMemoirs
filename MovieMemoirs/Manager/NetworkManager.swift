@@ -81,21 +81,19 @@ class NetworkManager {
         }
     }
     
-    func fetchFilm(by id: String) async -> Result<Movie?, NetworkError> {
+    func fetchFilm(by id: String) async throws -> Movie {
         let urlString = baseURL + SearchType.id.searchSuffix + id + apiKey
         guard let url = URL(string: urlString) else {
-            return .failure(NetworkError.invalidURL)
+            throw NetworkError.invalidURL
         }
         
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             let decoder = JSONDecoder()
             let movie = try decoder.decode(Movie.self, from: data)
-            return .success(movie)
+            return movie
         } catch {
-            return .failure(NetworkError.networkError)
+            throw NetworkError.networkError
         }
     }
-    
-    
 }

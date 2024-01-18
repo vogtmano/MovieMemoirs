@@ -21,7 +21,7 @@ class CollectionVC: UICollectionViewController {
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                   heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), 
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
                                                    heightDimension: .absolute(90))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
@@ -59,6 +59,7 @@ class CollectionVC: UICollectionViewController {
         }
     }
     
+    // The fetchMovies method is responsible for fetching the list of movies based on the search title from the network. It's using the NetworkManager to fetch the data.
     func fetchMovies() {
         Task { @MainActor in
             do {
@@ -75,16 +76,23 @@ class CollectionVC: UICollectionViewController {
         }
     }
     
+    // The applySnapshot method is updating the UICollectionViewDiffableDataSource with the fetched movies.
     func applySnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
         snapshot.appendSections([.main])
         snapshot.appendItems(viewModel.movies, toSection: .main)
         dataSource?.apply(snapshot)
     }
- 
+    
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let viewModel = MMMovieVM(id: self.viewModel.movies[indexPath.item].id)
-        let movieVC = MovieVC(viewModel: viewModel)
-        navigationController?.pushViewController(movieVC, animated: true)
+        //        let viewModel = MMMovieVM(id: self.viewModel.movies[indexPath.item].id)
+        //        let movieVC = MMMovieVC(viewModel: viewModel)
+        //        navigationController?.pushViewController(movieVC, animated: true)
+        
+        let selectedMovie = viewModel.movies[indexPath.item]
+        let movieVM = MMMovieVM(id: selectedMovie.id)
+        
+        let movieVC = MMMovieVC(viewModel: movieVM)
+        navigationController?.pushViewController(movieVC, animated: true)        
     }
 }

@@ -7,13 +7,7 @@
 
 import UIKit
 
-protocol MMCollectionVMDelegates: AnyObject {
-    
-}
-
-
 class MMCollectionVM {
-    weak var delegate: MMCollectionVMDelegates?
     weak var navigationController: UINavigationController?
     var movieTitle = ""
     var movies = [MovieThumbnail]()

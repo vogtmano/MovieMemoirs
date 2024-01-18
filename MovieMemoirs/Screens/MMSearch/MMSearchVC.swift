@@ -8,10 +8,6 @@
 import UIKit
 
 class MMSearchVC: UIViewController {
-    enum Segue {
-        static let toMovieVC = "showMovies"
-    }
-    
     var imageView: UIImageView!
     var textField: UITextField!
     
