@@ -96,18 +96,18 @@ class MMMovieVC: UIViewController {
         super.viewDidLoad()
         configureUI()
         viewModel.fetchMovieDetails()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(presentFavouritesAlert))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addToFavourites))
     }
     
-    @objc func presentFavouritesAlert() {
+    @objc func addToFavourites() {
         let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
-        var decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
+        let decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
         
         if decodedFavourites.contains(where: { movie in
             viewModel.movie?.imdbID == movie.id
         }) {
             let ac = UIAlertController(title: "Already in Favourites", 
-                                       message: "The movie, you are trying to add is already in your Favourite Movies list",
+                                       message: "That movie is already in your Favourites list",
                                        preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
@@ -115,13 +115,13 @@ class MMMovieVC: UIViewController {
             let ac = UIAlertController(title: "Add to Favourites", 
                                        message: "Would you want to add that movie to your Favourites list?",
                                        preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: addToFavourites))
+            ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: saveToFavourites))
             ac.addAction(UIAlertAction(title: "No", style: .cancel))
             present(ac, animated: true)
         }
     }
     
-    @objc func addToFavourites(action: UIAlertAction) {
+    @objc func saveToFavourites(action: UIAlertAction) {
         guard let movie = self.viewModel.movie else { return }
         let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
         var decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
