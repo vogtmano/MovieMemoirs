@@ -7,16 +7,29 @@
 
 import UIKit
 
-class MMFavouritesVC: UITableViewController {
-    private var movies: Set<String>
-    let posterImage = UIImageView()
-    let movieTitle = UILabel()
+class MMFavouritesVC: UICollectionViewController {
+    enum Section {
+        case main
+    }
+    
     let viewModel: MMFavouritesVM
+    var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail>?
+    let posterImage = UIImageView()
+    let movieTitle = MMLabel()
     
     init(viewModel: MMFavouritesVM) {
         self.viewModel = viewModel
-        movies = []
-        super.init(nibName: nil, bundle: nil)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout { _,_ in
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                  heightDimension: .fractionalHeight(1))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                                   heightDimension: .absolute(90))
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+            group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+            let section = NSCollectionLayoutSection(group: group)
+            return section
+        })
     }
     
     required init?(coder: NSCoder) {
@@ -27,25 +40,61 @@ class MMFavouritesVC: UITableViewController {
         super.viewDidLoad()
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
         title = "Favourite Movies"
+        configureDataSource()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        downloadMovie()
+    }
+    
+    func configureDataSource() {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewCell, MovieThumbnail> { cell, indexPath, movie in
+            var config = UIListContentConfiguration.cell()
+            config.text = movie.title
+            config.textProperties.font = UIFont.systemFont(ofSize: 20, weight: .semibold)
+            config.textProperties.numberOfLines = 0
+            
+            Task { @MainActor in
+                config.image = await NetworkManager.shared.fetchPoster(urlString: movie.poster)
+                config.imageProperties.maximumSize = CGSize(width: 100, height: 100)
+                cell.contentConfiguration = config
+            }
+        }
+        
+        dataSource = UICollectionViewDiffableDataSource<Section, MovieThumbnail>(collectionView: collectionView) { collectionView, indexPath, movie in
+            collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: movie)
+        }
+    }
+    
+    func downloadMovie() {
+        let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
+        let decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
+        viewModel.movies = decodedFavourites
+        applySnapshot()
     }
     
     @objc func shareTapped() {
+        guard let image = posterImage.image else {
+        print("No picture found") ; return }
+    
+        guard let title = movieTitle.text else { print("No title found") ; return }
         
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        movies.count
+        let vc = UIActivityViewController(activityItems: [image, title], applicationActivities: [])
+        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(vc, animated: true)
+        print("I've been tapped")
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = movieTitle.text
-        cell.imageView?.image = posterImage.image
-        return cell
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.movies, toSection: .main)
+        dataSource?.apply(snapshot)
     }
 }
 
-extension MMFavouritesVC: MMFavouritesVMDelegates {
+extension MMFavouritesVC: MMFavouritesVMDelegates {    
     func didFetchMovieDetails(film: Movie) {
         Task { @MainActor [weak self] in
             guard let self else { return }

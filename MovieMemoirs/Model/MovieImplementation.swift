@@ -15,7 +15,7 @@ struct DecodingMovie: Decodable {
     let search: [MovieThumbnail]
 }
 
-struct MovieThumbnail: Decodable, Hashable {
+struct MovieThumbnail: Codable, Hashable {
     var title: String
     var poster: String
     var id: String
@@ -27,13 +27,12 @@ struct MovieThumbnail: Decodable, Hashable {
     }
 }
 
-struct Movie: Decodable, Hashable {
+struct Movie: Decodable, Hashable, Equatable {
     var title: String
     var year: String
     var genre: String
     var released: String
     var director: String
-    var isFavourite: Bool = false
     var actors: String
     var plot: String
     var awards: String

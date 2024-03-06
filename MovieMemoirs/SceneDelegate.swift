@@ -42,7 +42,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let viewModel = MMFavouritesVM()
         let favVC = MMFavouritesVC(viewModel: viewModel)
         favVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
-        return UINavigationController(rootViewController: favVC)
+        let navigationController = UINavigationController(rootViewController: favVC)
+        viewModel.navigationController = navigationController
+        return navigationController
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

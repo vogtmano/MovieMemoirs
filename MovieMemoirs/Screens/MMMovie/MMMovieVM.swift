@@ -15,6 +15,7 @@ protocol MMMovieVMDelegates: AnyObject {
 class MMMovieVM {
     weak var delegate: MMMovieVMDelegates?
     var id: String
+    var movie: Movie?
     
     init(id: String) {
         self.id = id
@@ -24,6 +25,7 @@ class MMMovieVM {
         Task {
             do {
                 let movie = try await NetworkManager.shared.fetchFilm(by: id)
+                self.movie = movie
                 delegate?.didFetchMovieDetails(film: movie)
                 
                 guard let poster = await NetworkManager.shared.fetchPoster(urlString: movie.posterUrl) else { return }

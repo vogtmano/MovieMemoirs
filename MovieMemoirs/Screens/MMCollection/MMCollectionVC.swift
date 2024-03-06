@@ -85,10 +85,6 @@ class CollectionVC: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //        let viewModel = MMMovieVM(id: self.viewModel.movies[indexPath.item].id)
-        //        let movieVC = MMMovieVC(viewModel: viewModel)
-        //        navigationController?.pushViewController(movieVC, animated: true)
-        
         let selectedMovie = viewModel.movies[indexPath.item]
         let movieVM = MMMovieVM(id: selectedMovie.id)
         
