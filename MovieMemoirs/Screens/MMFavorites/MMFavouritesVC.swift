@@ -7,9 +7,41 @@
 
 import UIKit
 
-class MMFavouritesVC: UICollectionViewController {
+class MMFavouritesVC: UIViewController {
+    
     enum Section {
         case main
+    }
+    
+    lazy var collectionView: UICollectionView = {
+        let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: listLayout)
+        view.addSubview(collectionView)
+        collectionView.delegate = self
+        return collectionView
+    }()
+    
+    lazy var listLayout = UICollectionViewCompositionalLayout { _, layoutEnvironment in
+        var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        configuration.trailingSwipeActionsConfigurationProvider = { [weak self] (indexPath) in
+            guard let item = self?.dataSource?.itemIdentifier(for: indexPath) else { return nil }
+            let action = UIContextualAction(style: .destructive, title: "Delete") { _, _, completion in
+                self?.viewModel.movies.removeAll { $0.id == item.id }
+                self?.applySnapshot()
+                self?.updateUserDefaults()
+                completion(true)
+            }
+            return UISwipeActionsConfiguration(actions: [action])
+        }
+        
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                              heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
+                                               heightDimension: .absolute(90))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
+        let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: layoutEnvironment)
+        return section
     }
     
     let viewModel: MMFavouritesVM
@@ -19,17 +51,7 @@ class MMFavouritesVC: UICollectionViewController {
     
     init(viewModel: MMFavouritesVM) {
         self.viewModel = viewModel
-        super.init(collectionViewLayout: UICollectionViewCompositionalLayout { _,_ in
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                  heightDimension: .fractionalHeight(1))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1),
-                                                   heightDimension: .absolute(90))
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
-            group.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0)
-            let section = NSCollectionLayoutSection(group: group)
-            return section
-        })
+        super.init(nibName: nil, bundle: nil)
     }
     
     required init?(coder: NSCoder) {
@@ -74,6 +96,11 @@ class MMFavouritesVC: UICollectionViewController {
         applySnapshot()
     }
     
+    func updateUserDefaults() {
+        let encodedData = try? JSONEncoder().encode(viewModel.movies)
+        UserDefaults.standard.set(encodedData, forKey: "Favourites")
+    }
+    
     func applySnapshot() {
         var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
         snapshot.appendSections([.main])
@@ -83,8 +110,8 @@ class MMFavouritesVC: UICollectionViewController {
     
     @objc func shareTapped() {
         guard let image = posterImage.image else {
-        print("No picture found") ; return }
-    
+            print("No picture found") ; return }
+        
         guard let title = movieTitle.text else { print("No title found") ; return }
         
         let vc = UIActivityViewController(activityItems: [image, title], applicationActivities: [])
@@ -93,7 +120,11 @@ class MMFavouritesVC: UICollectionViewController {
         print("I've been tapped")
     }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    
+}
+
+extension MMFavouritesVC: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = viewModel.movies[indexPath.item]
         let movieVM = MMMovieVM(id: selectedMovie.id)
         let movieVC = MMMovieVC(viewModel: movieVM)
@@ -101,7 +132,7 @@ class MMFavouritesVC: UICollectionViewController {
     }
 }
 
-extension MMFavouritesVC: MMFavouritesVMDelegates {    
+extension MMFavouritesVC: MMFavouritesVMDelegates {
     func didFetchMovieDetails(film: Movie) {
         Task { @MainActor [weak self] in
             guard let self else { return }

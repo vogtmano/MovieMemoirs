@@ -8,6 +8,7 @@
 import UIKit
 
 class MovieStackView: UIStackView {
+   
     init() {
         super.init(frame: .zero)
         alignment = .top

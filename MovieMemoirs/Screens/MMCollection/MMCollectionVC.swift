@@ -8,6 +8,7 @@
 import UIKit
 
 class CollectionVC: UICollectionViewController {
+    
     enum Section {
         case main
     }

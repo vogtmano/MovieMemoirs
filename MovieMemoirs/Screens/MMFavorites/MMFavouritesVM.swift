@@ -17,18 +17,4 @@ class MMFavouritesVM {
     weak var delegate: MMFavouritesVMDelegates?
     weak var navigationController: UINavigationController?
     var movies = [MovieThumbnail]()
-    
-//    func fetchMovieDetails() {
-//        Task {
-//            do {
-//                let movie = try await NetworkManager.shared.fetchFilm(by: movieThumbnail.id)
-//                delegate?.didFetchMovieDetails(film: movie)
-//                
-//                guard let poster = await NetworkManager.shared.fetchPoster(urlString: movie.posterUrl) else { return }
-//                delegate?.didFetchPoster(poster: poster)
-//            } catch {
-//                fatalError(error.localizedDescription)
-//            }
-//        }
-//    }
 }

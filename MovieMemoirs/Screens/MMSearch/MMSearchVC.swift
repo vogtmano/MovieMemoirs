@@ -10,8 +10,8 @@ import UIKit
 class MMSearchVC: UIViewController {
     var imageView: UIImageView!
     var textField: UITextField!
-    
     let viewModel: MMSearchVM
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setLogo()
