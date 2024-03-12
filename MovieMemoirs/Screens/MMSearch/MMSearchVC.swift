@@ -26,6 +26,7 @@ class MMSearchVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         viewModel.startAutomaticAnimation()
+        textField.text = ""
     }
     
     override func viewWillDisappear(_ animated: Bool) {

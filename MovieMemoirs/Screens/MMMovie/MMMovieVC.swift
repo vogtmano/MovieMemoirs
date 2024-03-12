@@ -130,7 +130,9 @@ class MMMovieVC: UIViewController {
         let encodedFavourites = try? JSONEncoder().encode(decodedFavourites)
         UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
         
-        let ac = UIAlertController(title: "Added to Favourites", message: "The movie has been added to your Favourites list", preferredStyle: .actionSheet)
+        let ac = UIAlertController(title: "Added to Favourites", 
+                                   message: "The movie has been added to your Favourites list",
+                                   preferredStyle: .actionSheet)
         let imageView = UIImageView(frame: CGRect(x: 10, y: 30, width: 25, height: 25))
         imageView.image = UIImage(named: "star")
         ac.view.addSubview(imageView)
