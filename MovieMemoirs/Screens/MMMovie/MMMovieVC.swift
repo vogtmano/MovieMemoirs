@@ -134,7 +134,8 @@ class MMMovieVC: UIViewController {
                                    message: "The movie has been added to your Favourites list",
                                    preferredStyle: .actionSheet)
         let imageView = UIImageView(frame: CGRect(x: 10, y: 30, width: 25, height: 25))
-        imageView.image = UIImage(named: "star")
+        imageView.image = UIImage(systemName: "star.fill",
+                                  withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .light))
         ac.view.addSubview(imageView)
         present(ac, animated: true)
         
