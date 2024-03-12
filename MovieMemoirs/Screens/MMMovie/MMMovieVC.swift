@@ -129,6 +129,17 @@ class MMMovieVC: UIViewController {
         decodedFavourites.append(MovieThumbnail(title: movie.title, poster: movie.posterUrl, id: movie.imdbID))
         let encodedFavourites = try? JSONEncoder().encode(decodedFavourites)
         UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
+        
+        let ac = UIAlertController(title: "Added to Favourites", message: "The movie has been added to your Favourites list", preferredStyle: .actionSheet)
+        let imageView = UIImageView(frame: CGRect(x: 10, y: 30, width: 25, height: 25))
+        imageView.image = UIImage(named: "star")
+        ac.view.addSubview(imageView)
+        present(ac, animated: true)
+        
+        let deadline = DispatchTime.now() + 3
+        DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 }
 

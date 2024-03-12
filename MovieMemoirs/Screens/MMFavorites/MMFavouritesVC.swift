@@ -97,8 +97,8 @@ class MMFavouritesVC: UIViewController {
     }
     
     func updateUserDefaults() {
-        let encodedData = try? JSONEncoder().encode(viewModel.movies)
-        UserDefaults.standard.set(encodedData, forKey: "Favourites")
+        let encodedFavourites = try? JSONEncoder().encode(viewModel.movies)
+        UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
     }
     
     func applySnapshot() {
