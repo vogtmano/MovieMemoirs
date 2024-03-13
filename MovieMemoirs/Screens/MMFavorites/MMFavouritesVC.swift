@@ -79,7 +79,7 @@ class MMFavouritesVC: UIViewController {
             
             Task { @MainActor in
                 config.image = await NetworkManager.shared.fetchPoster(urlString: movie.poster)
-                config.imageProperties.maximumSize = CGSize(width: 100, height: 100)
+                config.imageProperties.maximumSize = CGSize(width: 70, height: 70)
                 cell.contentConfiguration = config
             }
         }
@@ -109,15 +109,15 @@ class MMFavouritesVC: UIViewController {
     }
     
     @objc func shareTapped() {
-        guard let image = posterImage.image else {
-            print("No picture found") ; return }
-        
-        guard let title = movieTitle.text else { print("No title found") ; return }
-        
-        let vc = UIActivityViewController(activityItems: [image, title], applicationActivities: [])
-        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(vc, animated: true)
-        print("I've been tapped")
+//        guard let image = posterImage.image else {
+//            print("No picture found") ; return }
+//        
+//        guard let title = movieTitle.text else { print("No title found") ; return }
+//        
+//        let vc = UIActivityViewController(activityItems: [image, title], applicationActivities: [])
+//        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+//        present(vc, animated: true)
+//        print("I've been tapped")
     }
 }
 

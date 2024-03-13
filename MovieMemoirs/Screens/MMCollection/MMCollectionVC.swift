@@ -50,7 +50,7 @@ class CollectionVC: UICollectionViewController {
             
             Task { @MainActor in
                 config.image = await NetworkManager.shared.fetchPoster(urlString: movie.poster)
-                config.imageProperties.maximumSize = CGSize(width: 100, height: 100)
+                config.imageProperties.maximumSize = CGSize(width: 70, height: 70)
                 cell.contentConfiguration = config
             }
         }
