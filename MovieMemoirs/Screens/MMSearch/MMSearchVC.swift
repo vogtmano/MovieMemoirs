@@ -14,10 +14,9 @@ class MMSearchVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addObservers()
         setLogo()
         setTextField()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(tapGesture)
@@ -48,14 +47,18 @@ class MMSearchVC: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    func addObservers() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     func setLogo() {
         imageView = UIImageView(image: UIImage(named: "logo"))
         imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(toggleAnimation))
-        imageView.addGestureRecognizer(tapGesture)
+
         
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 350),
@@ -80,8 +83,9 @@ class MMSearchVC: UIViewController {
         textField.autocapitalizationType = .none
         textField.translatesAutoresizingMaskIntoConstraints = false
         
-        let sfSymbol = UIImage(systemName: "magnifyingglass", withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .light))
-        let searchSymbol = UIImageView(image: sfSymbol)
+        let searchSymbol = UIImageView(image: UIImage(systemName: "magnifyingglass",
+                                                      withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, 
+                                                                                                     weight: .light)))
         searchSymbol.tintColor = .systemYellow
         searchSymbol.isUserInteractionEnabled = true
         
@@ -106,15 +110,6 @@ class MMSearchVC: UIViewController {
         }
         
         viewModel.symbolTapped(text: textField.text)
-    }
-    
-    @objc func toggleAnimation() {
-        viewModel.isAnimating.toggle()
-        if viewModel.isAnimating {
-            viewModel.startAutomaticAnimation()
-        } else {
-            viewModel.timer?.invalidate()
-        }
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {

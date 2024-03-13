@@ -119,8 +119,6 @@ class MMFavouritesVC: UIViewController {
         present(vc, animated: true)
         print("I've been tapped")
     }
-    
-    
 }
 
 extension MMFavouritesVC: UICollectionViewDelegate {
