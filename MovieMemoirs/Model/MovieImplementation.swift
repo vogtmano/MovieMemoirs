@@ -19,11 +19,13 @@ struct MovieThumbnail: Codable, Hashable {
     var title: String
     var poster: String
     var id: String
+    var year: String
     
     enum CodingKeys: String, CodingKey {
         case title = "Title"
         case poster = "Poster"
         case id = "imdbID"
+        case year = "Year"
     }
 }
 

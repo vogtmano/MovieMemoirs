@@ -126,7 +126,7 @@ class MMMovieVC: UIViewController {
         guard let movie = self.viewModel.movie else { return }
         let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
         var decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
-        decodedFavourites.append(MovieThumbnail(title: movie.title, poster: movie.posterUrl, id: movie.imdbID))
+        decodedFavourites.append(MovieThumbnail(title: movie.title, poster: movie.posterUrl, id: movie.imdbID, year: movie.year))
         let encodedFavourites = try? JSONEncoder().encode(decodedFavourites)
         UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
         

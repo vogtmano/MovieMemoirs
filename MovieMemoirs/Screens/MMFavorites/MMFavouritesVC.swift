@@ -109,15 +109,19 @@ class MMFavouritesVC: UIViewController {
     }
     
     @objc func shareTapped() {
-//        guard let image = posterImage.image else {
-//            print("No picture found") ; return }
-//        
-//        guard let title = movieTitle.text else { print("No title found") ; return }
-//        
-//        let vc = UIActivityViewController(activityItems: [image, title], applicationActivities: [])
-//        vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-//        present(vc, animated: true)
-//        print("I've been tapped")
+        let shareTitle = "Check out my Favourite Movies!"
+        let movieTitlesWithYears = viewModel.movies.map { "\($0.title) (\($0.year))" }.joined(separator: "\n")
+        let shareMessage = """
+        \(shareTitle)
+
+        \(movieTitlesWithYears)
+        """
+        let activityItems = [shareMessage]
+        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: [])
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityVC, animated: true)
+        
+        print(activityItems)
     }
 }
 
