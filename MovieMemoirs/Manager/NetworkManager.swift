@@ -8,6 +8,7 @@
 import UIKit
 
 class NetworkManager {
+    
     enum SearchType {
         case title
         case listOfTitles
@@ -31,7 +32,6 @@ class NetworkManager {
     }
     
     static let shared = NetworkManager()
-    
     private let apiKey = "&apikey=7d26b674"
     private let baseURL = "https://www.omdbapi.com/?"
     
@@ -52,21 +52,21 @@ class NetworkManager {
         }
     }
     
-    func fetchFilm(with title: String) async -> Result<Movie?, NetworkError> {
-        let urlString = baseURL + SearchType.title.searchSuffix + title + apiKey
-        guard let url = URL(string: urlString) else {
-            return .failure(NetworkError.invalidURL)
-        }
-        
-        do {
-            let (data, _) = try await URLSession.shared.data(from: url)
-            let decoder = JSONDecoder()
-            let movie = try decoder.decode(Movie.self, from: data)
-            return .success(movie)
-        } catch {
-            return .failure(NetworkError.networkError)
-        }
-    }
+//    func fetchFilm(with title: String) async -> Result<Movie?, NetworkError> {
+//        let urlString = baseURL + SearchType.title.searchSuffix + title + apiKey
+//        guard let url = URL(string: urlString) else {
+//            return .failure(NetworkError.invalidURL)
+//        }
+//
+//        do {
+//            let (data, _) = try await URLSession.shared.data(from: url)
+//            let decoder = JSONDecoder()
+//            let movie = try decoder.decode(Movie.self, from: data)
+//            return .success(movie)
+//        } catch {
+//            return .failure(NetworkError.networkError)
+//        }
+//    }
     
     func fetchPoster(urlString: String) async -> UIImage? {
         guard let url = URL(string: urlString) else {

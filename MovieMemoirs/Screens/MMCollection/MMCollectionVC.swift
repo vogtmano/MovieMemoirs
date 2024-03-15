@@ -71,7 +71,14 @@ class CollectionVC: UICollectionViewController {
                     self.viewModel.movies = fetchedMovies
                     applySnapshot()
                 case .failure(let error):
-                    print("Error fetching movies: \(error)")
+                    DispatchQueue.main.async { [weak self] in
+                        let ac = UIAlertController(title: "The title you provided doesn't exist", 
+                                                   message: "Try to rewrite the title again.",
+                                                   preferredStyle: .alert)
+                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: self?.returnToSearchVC))
+                        self?.present(ac, animated: true)
+                        print("Error fetching movies: \(error)")
+                    }
                 }
             }
         }
@@ -85,10 +92,14 @@ class CollectionVC: UICollectionViewController {
         dataSource?.apply(snapshot)
     }
     
+    func returnToSearchVC(action: UIAlertAction! = nil) {
+        navigationController?.popViewController(animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = viewModel.movies[indexPath.item]
         let movieVM = MMMovieVM(id: selectedMovie.id)
         let movieVC = MMMovieVC(viewModel: movieVM)
-        navigationController?.pushViewController(movieVC, animated: true)        
+        navigationController?.pushViewController(movieVC, animated: true)
     }
 }
