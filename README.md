@@ -9,7 +9,7 @@ On the movie details screen, the user can add the movie to the list of their fav
 ## What's inside?
 
 - MVVM
-- 100 % Programmatic UI
+- 100% Programmatic UI
 - NetworkManager
 - Protocols
 - JSON
@@ -38,6 +38,8 @@ On the movie details screen, the user can add the movie to the list of their fav
 <img src="https://github.com/vogtmano/MovieMemoirs/assets/92689831/0607c142-165e-4bf3-b64a-1ac66feba77c" width=300 height=520>
 
 
+## Videos
+https://github.com/vogtmano/MovieMemoirs/assets/92689831/35c4afe5-7912-4760-b6de-e6e0a3dd1de1
 
 
 
