@@ -26,19 +26,14 @@ class NetworkManager {
         }
     }
     
-    enum NetworkError: Error {
-        case invalidURL
-        case networkError
-    }
-    
     static let shared = NetworkManager()
     private let apiKey = "&apikey=7d26b674"
     private let baseURL = "https://www.omdbapi.com/?"
     
-    func fetchFilms(with title: String) async -> Result<[MovieThumbnail], NetworkError> {
+    func fetchFilms(with title: String) async -> Result<[MovieThumbnail], MMError> {
         let urlString = baseURL + SearchType.listOfTitles.searchSuffix + title + apiKey
         guard let url = URL(string: urlString) else {
-            return .failure(NetworkError.invalidURL)
+            return .failure(MMError.invalidURL)
         }
         
         do {
@@ -48,25 +43,9 @@ class NetworkManager {
             return .success(decodingObject.search)
             
         } catch {
-            return .failure(NetworkError.networkError)
+            return .failure(MMError.networkError)
         }
     }
-    
-//    func fetchFilm(with title: String) async -> Result<Movie?, NetworkError> {
-//        let urlString = baseURL + SearchType.title.searchSuffix + title + apiKey
-//        guard let url = URL(string: urlString) else {
-//            return .failure(NetworkError.invalidURL)
-//        }
-//
-//        do {
-//            let (data, _) = try await URLSession.shared.data(from: url)
-//            let decoder = JSONDecoder()
-//            let movie = try decoder.decode(Movie.self, from: data)
-//            return .success(movie)
-//        } catch {
-//            return .failure(NetworkError.networkError)
-//        }
-//    }
     
     func fetchPoster(urlString: String) async -> UIImage? {
         guard let url = URL(string: urlString) else {
@@ -84,7 +63,7 @@ class NetworkManager {
     func fetchFilm(by id: String) async throws -> Movie {
         let urlString = baseURL + SearchType.id.searchSuffix + id + apiKey
         guard let url = URL(string: urlString) else {
-            throw NetworkError.invalidURL
+            throw MMError.invalidURL
         }
         
         do {
@@ -93,7 +72,7 @@ class NetworkManager {
             let movie = try decoder.decode(Movie.self, from: data)
             return movie
         } catch {
-            throw NetworkError.networkError
+            throw MMError.networkError
         }
     }
 }

@@ -101,34 +101,32 @@ class MMMovieVC: UIViewController {
     }
     
     @objc func addToFavourites() {
-        let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
-        let decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
-        
-        if decodedFavourites.contains(where: { movie in
-            viewModel.movie?.imdbID == movie.id
-        }) {
-            let ac = UIAlertController(title: "Already in Favourites", 
-                                       message: "That movie is already in your Favourites list",
-                                       preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "OK", style: .default))
-            present(ac, animated: true)
-        } else {
-            let ac = UIAlertController(title: "Add to Favourites", 
-                                       message: "Would you want to add that movie to your Favourites list?",
-                                       preferredStyle: .alert)
-            ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: saveToFavourites))
-            ac.addAction(UIAlertAction(title: "No", style: .cancel))
-            present(ac, animated: true)
+        do {
+            let decodedFavourites = try PersistenceManager.shared.retrieveMovies()
+            if decodedFavourites.contains(where: { movie in
+                viewModel.movie?.imdbID == movie.id
+            }) {
+                let ac = UIAlertController(title: "Already in Favourites",
+                                           message: "That movie is already in your Favourites list",
+                                           preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "OK", style: .default))
+                present(ac, animated: true)
+            } else {
+                let ac = UIAlertController(title: "Add to Favourites",
+                                           message: "Would you want to add that movie to your Favourites list?",
+                                           preferredStyle: .alert)
+                ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: saveToFavourites))
+                ac.addAction(UIAlertAction(title: "No", style: .cancel))
+                present(ac, animated: true)
+            }
+        } catch {
+            fatalError()
         }
     }
     
     @objc func saveToFavourites(action: UIAlertAction) {
         guard let movie = self.viewModel.movie else { return }
-        let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
-        var decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
-        decodedFavourites.append(MovieThumbnail(title: movie.title, poster: movie.posterUrl, id: movie.imdbID, year: movie.year))
-        let encodedFavourites = try? JSONEncoder().encode(decodedFavourites)
-        UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
+        PersistenceManager.shared.saveMovie(movieTitle: movie.title, poster: movie.posterUrl, year: movie.year)
         
         let ac = UIAlertController(title: "Added to Favourites", 
                                    message: "The movie has been added to your Favourites list",

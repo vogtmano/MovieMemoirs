@@ -27,7 +27,6 @@ class MMFavouritesVC: UIViewController {
             let action = UIContextualAction(style: .destructive, title: "Delete") { _, _, completion in
                 self?.viewModel.movies.removeAll { $0.id == item.id }
                 self?.applySnapshot()
-                self?.updateUserDefaults()
                 completion(true)
             }
             return UISwipeActionsConfiguration(actions: [action])
@@ -67,7 +66,7 @@ class MMFavouritesVC: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        downloadMovie()
+        downloadMovies()
     }
     
     func configureDataSource() {
@@ -89,16 +88,14 @@ class MMFavouritesVC: UIViewController {
         }
     }
     
-    func downloadMovie() {
-        let favouritesData = UserDefaults.standard.data(forKey: "Favourites") ?? Data()
-        let decodedFavourites = (try? JSONDecoder().decode([MovieThumbnail].self, from: favouritesData)) ?? []
-        viewModel.movies = decodedFavourites
-        applySnapshot()
-    }
-    
-    func updateUserDefaults() {
-        let encodedFavourites = try? JSONEncoder().encode(viewModel.movies)
-        UserDefaults.standard.set(encodedFavourites, forKey: "Favourites")
+    func downloadMovies() {
+        do {
+            let retrievedMovies = try PersistenceManager.shared.retrieveMovies()
+            viewModel.movies = retrievedMovies
+            applySnapshot()
+        } catch {
+            fatalError(error.localizedDescription)
+        }
     }
     
     func applySnapshot() {
