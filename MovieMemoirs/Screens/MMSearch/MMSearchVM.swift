@@ -6,20 +6,43 @@
 //
 
 import UIKit
-
-protocol MMSearchVMDelegates: AnyObject {
-    func presentAlert()
-    func setImageTransformToIdentity()
-    func setImage(to transform: CGAffineTransform)
-}
+import OSLog
 
 class MMSearchVM {
-    weak var delegate: MMSearchVMDelegates?
-    weak var navigationController: UINavigationController?
-    var timer: Timer?
-    var currentAnimation = 0
-    var isAnimating = true
+    protocol Delegate: AnyObject {
+        func presentAlert()
+        func setImageTransformToIdentity()
+        func setImage(to transform: CGAffineTransform)
+    }
     
+    enum Action {
+        case startAnimation
+        case invalidateTimer
+        case symbolTapped(String?)
+    }
+    
+    static let logger = Logger(subsystem: "Interface", category: "Search")
+    
+    private var timer: Timer?
+    private var currentAnimation = 0
+    private var isAnimating = true
+    
+    weak var delegate: Delegate?
+    weak var navigationController: UINavigationController?
+    
+    func handle(_ event: Action) {
+        switch event {
+        case .startAnimation:
+            startAutomaticAnimation()
+        case .invalidateTimer:
+            invalidateTheTimer()
+        case .symbolTapped(let text):
+            symbolTapped(text: text)
+        }
+    }
+}
+
+private extension MMSearchVM {
     func symbolTapped(text: String?) {
         guard let title = text, !title.isEmpty else {
             delegate?.presentAlert()
@@ -31,20 +54,21 @@ class MMSearchVM {
         viewModel.navigationController = navigationController
         collection.viewModel.movieTitle = title
         
-        if let navigationController {
-            navigationController.pushViewController(collection, animated: true)
-        } else {
-            print("Warning: No navigation controller found.")
+        guard let navigationController else {
+            Self.logger.critical("Navigation Controller doesn't exist.")
+            return
         }
+        navigationController.pushViewController(collection, animated: true)
     }
     
     func startAutomaticAnimation() {
-        if timer == nil || !timer!.isValid {
-            timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true, block: { [weak self] _ in self?.performAnimation() })
+        if timer == nil || !(timer?.isValid ?? true) {
+            timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] _ in self?.performAnimation()
+            }
         }
     }
     
-    @objc func performAnimation() {
+    func performAnimation() {
         switch self.currentAnimation {
         case 1, 3, 5, 7:
             delegate?.setImageTransformToIdentity()
@@ -64,5 +88,9 @@ class MMSearchVM {
         if currentAnimation > 7 {
             currentAnimation = 0
         }
+    }
+    
+    func invalidateTheTimer() {
+        timer?.invalidate()
     }
 }

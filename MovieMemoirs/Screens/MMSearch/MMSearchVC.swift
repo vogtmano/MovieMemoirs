@@ -14,23 +14,21 @@ class MMSearchVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        addGestureRecognizers()
         addObservers()
         setLogo()
         setTextField()
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
-        view.addGestureRecognizer(tapGesture)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        viewModel.startAutomaticAnimation()
+        viewModel.handle(.startAnimation)
         textField.text = ""
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        viewModel.timer?.invalidate()
+        viewModel.handle(.invalidateTimer)
     }
     
     init(viewModel: MMSearchVM) {
@@ -47,13 +45,18 @@ class MMSearchVC: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    func addGestureRecognizers() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
+        view.addGestureRecognizer(tapGesture)
+    }
+    
     func addObservers() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     func setLogo() {
-        imageView = UIImageView(image: UIImage(named: "logo"))
+        imageView = UIImageView(image: UIImage(resource: .logo))
         imageView.isUserInteractionEnabled = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
@@ -85,7 +88,6 @@ class MMSearchVC: UIViewController {
                                                                                                      weight: .light)))
         searchSymbol.tintColor = .systemYellow
         searchSymbol.isUserInteractionEnabled = true
-        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(symbolTapped))
         searchSymbol.addGestureRecognizer(tapGesture)
         
@@ -105,8 +107,7 @@ class MMSearchVC: UIViewController {
         if textField.isFirstResponder {
             textField.resignFirstResponder()
         }
-        
-        viewModel.symbolTapped(text: textField.text)
+        viewModel.handle(.symbolTapped(textField.text))
     }
     
     @objc func keyboardWillShow(_ notification: Notification) {
@@ -129,7 +130,7 @@ class MMSearchVC: UIViewController {
     }
 }
 
-extension MMSearchVC: MMSearchVMDelegates {
+extension MMSearchVC: MMSearchVM.Delegate {
     func setImageTransformToIdentity() {
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
             self.imageView.transform = .identity
@@ -155,7 +156,7 @@ extension MMSearchVC: UITextFieldDelegate {
             textField.resignFirstResponder()
         }
         
-        viewModel.symbolTapped(text: textField.text)
+        viewModel.handle(.symbolTapped(textField.text))
         return true
     }
 }
