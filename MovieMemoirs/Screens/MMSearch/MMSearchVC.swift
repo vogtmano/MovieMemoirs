@@ -58,8 +58,6 @@ class MMSearchVC: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(imageView)
         
-
-        
         NSLayoutConstraint.activate([
             imageView.heightAnchor.constraint(equalToConstant: 350),
             imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 100),
@@ -82,7 +80,6 @@ class MMSearchVC: UIViewController {
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
         textField.translatesAutoresizingMaskIntoConstraints = false
-        
         let searchSymbol = UIImageView(image: UIImage(systemName: "magnifyingglass",
                                                       withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, 
                                                                                                      weight: .light)))

@@ -72,8 +72,8 @@ class CollectionVC: UICollectionViewController {
                     applySnapshot()
                 case .failure(let error):
                     DispatchQueue.main.async { [weak self] in
-                        let ac = UIAlertController(title: "The title you provided doesn't exist", 
-                                                   message: "Try to rewrite the title again.",
+                        let ac = UIAlertController(title: "Oops!",
+                                                   message: error.userFriendlyDescription,
                                                    preferredStyle: .alert)
                         ac.addAction(UIAlertAction(title: "OK", style: .default, handler: self?.returnToSearchVC))
                         self?.present(ac, animated: true)

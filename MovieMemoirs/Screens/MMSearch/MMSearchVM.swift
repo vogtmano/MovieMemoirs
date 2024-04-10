@@ -34,7 +34,7 @@ class MMSearchVM {
         if let navigationController {
             navigationController.pushViewController(collection, animated: true)
         } else {
-          print("Warning: No navigation controller found.")
+            print("Warning: No navigation controller found.")
         }
     }
     

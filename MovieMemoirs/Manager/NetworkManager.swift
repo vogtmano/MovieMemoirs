@@ -37,13 +37,16 @@ class NetworkManager {
         }
         
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let response = response as? HTTPURLResponse, response.statusCode == 200 else {
+                throw MMError.badResponse
+            }
             let decoder = JSONDecoder()
             let decodingObject = try decoder.decode(DecodingMovie.self, from: data)
             return .success(decodingObject.search)
             
         } catch {
-            return .failure(MMError.networkError)
+            return .failure(MMError.somethingWentWrong)
         }
     }
     
@@ -72,7 +75,7 @@ class NetworkManager {
             let movie = try decoder.decode(Movie.self, from: data)
             return movie
         } catch {
-            throw MMError.networkError
+            throw MMError.somethingWentWrong
         }
     }
 }
