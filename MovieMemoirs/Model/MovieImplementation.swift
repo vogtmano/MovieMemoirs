@@ -68,6 +68,18 @@ struct Movie: Decodable, Hashable, Equatable {
     var imdbRating: String
     var boxOffice: String
     var posterImage: UIImage?
+    var bodyUI: [(label: String, copy: String)] {
+        [
+            ("Year", year),
+            ("Genre", genre),
+            ("Released", released),
+            ("Director", director),
+            ("Actors", actors),
+            ("Awards", awards),
+            ("imdbRating", imdbRating),
+            ("BoxOffice", boxOffice)
+        ]
+    }
     
     enum CodingKeys: String, CodingKey {
         case title = "Title"

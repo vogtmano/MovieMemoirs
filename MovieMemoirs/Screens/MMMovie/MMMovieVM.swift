@@ -7,20 +7,34 @@
 
 import UIKit
 
-protocol MMMovieVMDelegates: AnyObject {
-    func didFetchMovieDetails(film: Movie)
-    func didFetchPoster(poster: UIImage)
-}
-
 class MMMovieVM {
-    weak var delegate: MMMovieVMDelegates?
+    protocol Delegate: AnyObject {
+        func presentAlert()
+        func didFetchMovieDetails(film: Movie)
+        func didFetchPoster(poster: UIImage)
+    }
+    
+    enum Action {
+        case viewDidLoad
+    }
+    
+    func handle(_ event: Action) {
+        switch event {
+        case .viewDidLoad:
+            fetchMovieDetails()
+        }
+    }
+    
+    weak var delegate: Delegate?
     var id: String
     var movie: Movie?
     
     init(id: String) {
         self.id = id
     }
-    
+}
+
+private extension MMMovieVM {
     func fetchMovieDetails() {
         Task {
             do {
@@ -31,7 +45,7 @@ class MMMovieVM {
                 guard let poster = await NetworkManager.shared.fetchPoster(urlString: movie.posterUrl) else { return }
                 delegate?.didFetchPoster(poster: poster)
             } catch {
-                fatalError(error.localizedDescription)
+                delegate?.presentAlert()
             }
         }
     }

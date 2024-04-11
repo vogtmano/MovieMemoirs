@@ -7,36 +7,6 @@
 
 import UIKit
 
-class MovieStackView: UIStackView {
-   
-    init() {
-        super.init(frame: .zero)
-        alignment = .top
-        layer.borderWidth = 1
-        layer.borderColor = UIColor.darkGray.cgColor
-        layer.cornerRadius = 8
-        layoutMargins = UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7)
-        isLayoutMarginsRelativeArrangement = true
-    }
-    
-    required init(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
-class MMLabel: UILabel {
-    init() {
-        super.init(frame: .zero)
-        numberOfLines = 0
-        font = UIFont.systemFont(ofSize: 23, weight: .semibold)
-        backgroundColor = .systemBackground
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 class MMMovieVC: UIViewController {
     var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -53,34 +23,8 @@ class MMMovieVC: UIViewController {
         return stack
     }()
     
-    let yearHorizontalStackView = MovieStackView()
-    let genreHorizontalStackView = MovieStackView()
-    let releasedHorizontalStackView = MovieStackView()
-    let directorHorizontalStackView = MovieStackView()
-    let actorsHorizontalStackView = MovieStackView()
-    let awardsHorizontalStackView = MovieStackView()
-    let imdbRatingHorizontalStackView = MovieStackView()
-    let boxOfficeHorizontalStackView = MovieStackView()
-    
     let posterImage = UIImageView()
     let plotTextView = MMLabel()
-    let yearLabel = MMLabel()
-    let yearValueLabel = MMLabel()
-    let genreLabel = MMLabel()
-    let genreValueLabel = MMLabel()
-    let releasedLabel = MMLabel()
-    let releasedValueLabel = MMLabel()
-    let directorLabel = MMLabel()
-    let directorValueLabel = MMLabel()
-    let actorsLabel = MMLabel()
-    let actorsValueLabel = MMLabel()
-    let awardsLabel = MMLabel()
-    let awardsValueLabel = MMLabel()
-    let imdbRatingLabel = MMLabel()
-    let imdbRatingValueLabel = MMLabel()
-    let boxOfficeLabel = MMLabel()
-    let boxOfficeValueLabel = MMLabel()
-    
     let viewModel: MMMovieVM
     
     init(viewModel: MMMovieVM) {
@@ -95,9 +39,15 @@ class MMMovieVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setRightBarButtonItem()
         configureUI()
-        viewModel.fetchMovieDetails()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addToFavourites))
+        viewModel.handle(.viewDidLoad)
+    }
+    
+    func setRightBarButtonItem() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
+                                                            target: self,
+                                                            action: #selector(addToFavourites))
     }
     
     @objc func addToFavourites() {
@@ -120,15 +70,17 @@ class MMMovieVC: UIViewController {
                 present(ac, animated: true)
             }
         } catch {
-            fatalError()
+            presentAlert()
         }
     }
     
     @objc func saveToFavourites(action: UIAlertAction) {
         guard let movie = self.viewModel.movie else { return }
-        PersistenceManager.shared.saveMovie(movieTitle: movie.title, poster: movie.posterUrl, id: movie.imdbID, year: movie.year)
-        
-        let ac = UIAlertController(title: "Added to Favourites", 
+        PersistenceManager.shared.saveMovie(movieTitle: movie.title,
+                                            poster: movie.posterUrl,
+                                            id: movie.imdbID,
+                                            year: movie.year)
+        let ac = UIAlertController(title: "Added to Favourites",
                                    message: "The movie has been added to your Favourites list",
                                    preferredStyle: .actionSheet)
         let imageView = UIImageView(frame: CGRect(x: 10, y: 30, width: 25, height: 25))
@@ -137,14 +89,21 @@ class MMMovieVC: UIViewController {
         ac.view.addSubview(imageView)
         present(ac, animated: true)
         
-        let deadline = DispatchTime.now() + 3
+        let deadline = DispatchTime.now() + 1.5
         DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
             self?.dismiss(animated: true)
         }
     }
 }
 
-extension MMMovieVC: MMMovieVMDelegates {
+extension MMMovieVC: MMMovieVM.Delegate {
+    func presentAlert() {
+        let ac = UIAlertController(title: "Oops!",
+                                   message: MMError.badResponse.userFriendlyDescription,
+                                   preferredStyle: .alert)
+        present(ac, animated: true)
+    }
+    
     func didFetchPoster(poster: UIImage) {
         Task { @MainActor [weak self] in
             guard let self else { return }
@@ -157,22 +116,16 @@ extension MMMovieVC: MMMovieVMDelegates {
             guard let self else { return }
             plotTextView.text = film.plot
             plotTextView.font = UIFont.systemFont(ofSize: 23, weight: .semibold)
-            yearValueLabel.text = "Year"
-            yearLabel.text = film.year
-            genreValueLabel.text = "Genre"
-            genreLabel.text = film.genre
-            releasedValueLabel.text = "Released"
-            releasedLabel.text = film.released
-            directorValueLabel.text = "Director"
-            directorLabel.text = film.director
-            actorsValueLabel.text = "Actors"
-            actorsLabel.text = film.actors
-            awardsValueLabel.text = "Awards"
-            awardsLabel.text = film.awards
-            imdbRatingValueLabel.text = "IMDb Rating"
-            imdbRatingLabel.text = film.imdbRating
-            boxOfficeValueLabel.text = "Box office"
-            boxOfficeLabel.text = film.boxOffice
+            film.bodyUI.forEach { title, copy in
+                let stackView = MovieStackView()
+                let titleLabel = MMLabel()
+                let copyLabel = MMLabel()
+                titleLabel.text = title
+                copyLabel.text = copy
+                stackView.addArrangedSubview(titleLabel)
+                stackView.addArrangedSubview(copyLabel)
+                self.mainStackView.addArrangedSubview(stackView)
+            }
         }
     }
 }
@@ -183,31 +136,6 @@ private extension MMMovieVC {
         scrollView.addSubview(mainStackView)
         mainStackView.addArrangedSubview(posterImage)
         mainStackView.addArrangedSubview(plotTextView)
-        mainStackView.addArrangedSubview(yearHorizontalStackView)
-        mainStackView.addArrangedSubview(genreHorizontalStackView)
-        mainStackView.addArrangedSubview(releasedHorizontalStackView)
-        mainStackView.addArrangedSubview(directorHorizontalStackView)
-        mainStackView.addArrangedSubview(actorsHorizontalStackView)
-        mainStackView.addArrangedSubview(awardsHorizontalStackView)
-        mainStackView.addArrangedSubview(imdbRatingHorizontalStackView)
-        mainStackView.addArrangedSubview(boxOfficeHorizontalStackView)
-        
-        yearHorizontalStackView.addArrangedSubview(yearValueLabel)
-        yearHorizontalStackView.addArrangedSubview(yearLabel)
-        genreHorizontalStackView.addArrangedSubview(genreValueLabel)
-        genreHorizontalStackView.addArrangedSubview(genreLabel)
-        releasedHorizontalStackView.addArrangedSubview(releasedValueLabel)
-        releasedHorizontalStackView.addArrangedSubview(releasedLabel)
-        directorHorizontalStackView.addArrangedSubview(directorValueLabel)
-        directorHorizontalStackView.addArrangedSubview(directorLabel)
-        actorsHorizontalStackView.addArrangedSubview(actorsValueLabel)
-        actorsHorizontalStackView.addArrangedSubview(actorsLabel)
-        awardsHorizontalStackView.addArrangedSubview(awardsValueLabel)
-        awardsHorizontalStackView.addArrangedSubview(awardsLabel)
-        imdbRatingHorizontalStackView.addArrangedSubview(imdbRatingValueLabel)
-        imdbRatingHorizontalStackView.addArrangedSubview(imdbRatingLabel)
-        boxOfficeHorizontalStackView.addArrangedSubview(boxOfficeValueLabel)
-        boxOfficeHorizontalStackView.addArrangedSubview(boxOfficeLabel)
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),

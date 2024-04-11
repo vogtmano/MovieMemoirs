@@ -131,7 +131,7 @@ extension MMFavouritesVC: UICollectionViewDelegate {
     }
 }
 
-extension MMFavouritesVC: MMFavouritesVMDelegates {
+extension MMFavouritesVC: Delegate {
     func didFetchMovieDetails(film: Movie) {
         Task { @MainActor [weak self] in
             guard let self else { return }
