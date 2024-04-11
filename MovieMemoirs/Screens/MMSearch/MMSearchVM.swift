@@ -43,24 +43,6 @@ class MMSearchVM {
 }
 
 private extension MMSearchVM {
-    func symbolTapped(text: String?) {
-        guard let title = text, !title.isEmpty else {
-            delegate?.presentAlert()
-            return
-        }
-        
-        let viewModel = MMCollectionVM()
-        let collection = MMCollectionVC(viewModel: viewModel)
-        viewModel.navigationController = navigationController
-        collection.viewModel.movieTitle = title
-        
-        guard let navigationController else {
-            Self.logger.critical("Navigation Controller doesn't exist.")
-            return
-        }
-        navigationController.pushViewController(collection, animated: true)
-    }
-    
     func startAutomaticAnimation() {
         if timer == nil || !(timer?.isValid ?? true) {
             timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] _ in self?.performAnimation()
@@ -92,5 +74,23 @@ private extension MMSearchVM {
     
     func invalidateTheTimer() {
         timer?.invalidate()
+    }
+    
+    func symbolTapped(text: String?) {
+        guard let title = text, !title.isEmpty else {
+            delegate?.presentAlert()
+            return
+        }
+        
+        let viewModel = MMCollectionVM()
+        let collection = MMCollectionVC(viewModel: viewModel)
+        viewModel.navigationController = navigationController
+        collection.viewModel.movieTitle = title
+        
+        guard let navigationController else {
+            Self.logger.critical("Navigation Controller doesn't exist.")
+            return
+        }
+        navigationController.pushViewController(collection, animated: true)
     }
 }

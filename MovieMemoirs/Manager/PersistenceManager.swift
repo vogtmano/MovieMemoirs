@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 
+@MainActor
 class PersistenceManager {
     static let shared = PersistenceManager()
     var container: ModelContainer?
@@ -42,6 +43,19 @@ class PersistenceManager {
             }
         } catch {
             throw MMError.persistenceFailRetrieving
+        }
+    }
+    
+    func updateFavourites(with movies: [MovieThumbnail]) {
+        let descriptor = FetchDescriptor<MovieThumbnail>()
+        do {
+            guard let existingMovies = try? context?.fetch(descriptor) else { return }
+            for existingMovie in existingMovies {
+                if !movies.contains(where: { $0.id == existingMovie.id }) {
+                    context?.delete(existingMovie)
+                }
+            }
+            try? context?.save()
         }
     }
 }

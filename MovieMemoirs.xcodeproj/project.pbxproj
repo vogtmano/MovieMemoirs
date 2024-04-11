@@ -138,6 +138,14 @@
 			path = "Custom Views";
 			sourceTree = "<group>";
 		};
+		84153CD12BC82462006759F7 /* Error */ = {
+			isa = PBXGroup;
+			children = (
+				84422A422BC5810D004669B6 /* MMError.swift */,
+			);
+			path = Error;
+			sourceTree = "<group>";
+		};
 		845A68BA2A83A3FC00F14E2E = {
 			isa = PBXGroup;
 			children = (
@@ -164,10 +172,11 @@
 				845A68C62A83A3FC00F14E2E /* AppDelegate.swift */,
 				845A68C82A83A3FC00F14E2E /* SceneDelegate.swift */,
 				847215132A865CA400295C51 /* Screens */,
-				84153CD02BC7FC27006759F7 /* Custom Views */,
-				8484812D2B975D6300E5ABA8 /* Extensions */,
 				84837EDA2A9E30BE002AEFC2 /* Manager */,
 				84837ED82A9E3031002AEFC2 /* Model */,
+				84153CD02BC7FC27006759F7 /* Custom Views */,
+				8484812D2B975D6300E5ABA8 /* Extensions */,
+				84153CD12BC82462006759F7 /* Error */,
 				845A68CF2A83A3FD00F14E2E /* Assets.xcassets */,
 				845A68D12A83A3FD00F14E2E /* LaunchScreen.storyboard */,
 				845A68D42A83A3FD00F14E2E /* Info.plist */,
@@ -215,7 +224,6 @@
 			isa = PBXGroup;
 			children = (
 				84837ED42A9E23FA002AEFC2 /* NetworkManager.swift */,
-				84422A422BC5810D004669B6 /* MMError.swift */,
 				84422A3E2BC56695004669B6 /* PersistenceManager.swift */,
 			);
 			path = Manager;

@@ -8,7 +8,6 @@
 import UIKit
 
 class NetworkManager {
-    
     enum SearchType {
         case title
         case listOfTitles

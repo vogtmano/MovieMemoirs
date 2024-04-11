@@ -8,7 +8,6 @@
 import UIKit
 
 class MMFavouritesVC: UIViewController {
-    
     enum Section {
         case main
     }
@@ -19,6 +18,11 @@ class MMFavouritesVC: UIViewController {
         collectionView.delegate = self
         return collectionView
     }()
+    let posterImage = UIImageView()
+    let movieTitle = MMLabel()
+
+    var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail>?
+    let viewModel: MMFavouritesVM
     
     lazy var listLayout = UICollectionViewCompositionalLayout { _, layoutEnvironment in
         var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -43,14 +47,10 @@ class MMFavouritesVC: UIViewController {
         return section
     }
     
-    let viewModel: MMFavouritesVM
-    var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail>?
-    let posterImage = UIImageView()
-    let movieTitle = MMLabel()
-    
     init(viewModel: MMFavouritesVM) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -59,14 +59,34 @@ class MMFavouritesVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareTapped))
         title = "Favourite Movies"
+        setRightBarButtonItem()
         configureDataSource()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        downloadMovies()
+        viewModel.handle(.viewWillAppear)
+    }
+    
+    func setRightBarButtonItem() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action,
+                                                            target: self,
+                                                            action: #selector(shareTapped))
+    }
+    
+    @objc func shareTapped() {
+        let shareTitle = "Check out my Favourite Movies!"
+        let movieTitlesWithYears = viewModel.movies.map { "\($0.title) (\($0.year))" }.joined(separator: "\n")
+        let shareMessage = """
+        \(shareTitle)
+
+        \(movieTitlesWithYears)
+        """
+        let activityItems = [shareMessage]
+        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: [])
+        activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityVC, animated: true)
     }
     
     func configureDataSource() {
@@ -87,39 +107,6 @@ class MMFavouritesVC: UIViewController {
             collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: movie)
         }
     }
-    
-    func downloadMovies() {
-        do {
-            let retrievedMovies = try PersistenceManager.shared.retrieveMovies()
-            viewModel.movies = retrievedMovies
-            applySnapshot()
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.movies, toSection: .main)
-        dataSource?.apply(snapshot)
-    }
-    
-    @objc func shareTapped() {
-        let shareTitle = "Check out my Favourite Movies!"
-        let movieTitlesWithYears = viewModel.movies.map { "\($0.title) (\($0.year))" }.joined(separator: "\n")
-        let shareMessage = """
-        \(shareTitle)
-
-        \(movieTitlesWithYears)
-        """
-        let activityItems = [shareMessage]
-        let activityVC = UIActivityViewController(activityItems: activityItems, applicationActivities: [])
-        activityVC.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(activityVC, animated: true)
-        
-        print(activityItems)
-    }
 }
 
 extension MMFavouritesVC: UICollectionViewDelegate {
@@ -131,18 +118,31 @@ extension MMFavouritesVC: UICollectionViewDelegate {
     }
 }
 
-extension MMFavouritesVC: Delegate {
+extension MMFavouritesVC: MMFavouritesVM.Delegate {
+    func presentAlert() {
+        let ac = UIAlertController(title: "Oops!",
+                                   message: MMError.badResponse.userFriendlyDescription,
+                                   preferredStyle: .alert)
+        present(ac, animated: true)
+    }
+    
     func didFetchMovieDetails(film: Movie) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+        Task { @MainActor in
             movieTitle.text = film.title
         }
     }
     
     func didFetchPoster(poster: UIImage) {
-        Task { @MainActor [weak self] in
-            guard let self else { return }
+        Task { @MainActor in
             posterImage.image = poster
         }
+    }
+    
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.movies, toSection: .main)
+        dataSource?.apply(snapshot)
+        PersistenceManager.shared.updateFavourites(with: viewModel.movies)
     }
 }
