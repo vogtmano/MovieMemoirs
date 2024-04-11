@@ -126,7 +126,7 @@ class MMMovieVC: UIViewController {
     
     @objc func saveToFavourites(action: UIAlertAction) {
         guard let movie = self.viewModel.movie else { return }
-        PersistenceManager.shared.saveMovie(movieTitle: movie.title, poster: movie.posterUrl, year: movie.year)
+        PersistenceManager.shared.saveMovie(movieTitle: movie.title, poster: movie.posterUrl, id: movie.imdbID, year: movie.year)
         
         let ac = UIAlertController(title: "Added to Favourites", 
                                    message: "The movie has been added to your Favourites list",

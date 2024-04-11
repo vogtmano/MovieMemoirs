@@ -20,7 +20,6 @@ struct DecodingMovie: Decodable {
 class MovieThumbnail: Codable, Hashable {
     var title: String
     var poster: String
-    @Attribute(.unique)
     var id: String
     var year: String
     
@@ -68,7 +67,6 @@ struct Movie: Decodable, Hashable, Equatable {
     var imdbID: String
     var imdbRating: String
     var boxOffice: String
-    
     var posterImage: UIImage?
     
     enum CodingKeys: String, CodingKey {

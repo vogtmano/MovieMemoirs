@@ -7,8 +7,7 @@
 
 import UIKit
 
-class CollectionVC: UICollectionViewController {
-    
+class MMCollectionVC: UICollectionViewController {
     enum Section {
         case main
     }
@@ -29,6 +28,8 @@ class CollectionVC: UICollectionViewController {
             let section = NSCollectionLayoutSection(group: group)
             return section
         })
+
+        viewModel.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -38,7 +39,7 @@ class CollectionVC: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureDataSource()
-        fetchMovies()
+        viewModel.handle(.viewDidLoad)
     }
     
     func configureDataSource() {
@@ -60,46 +61,19 @@ class CollectionVC: UICollectionViewController {
         }
     }
     
-    // The fetchMovies method is responsible for fetching the list of movies based on the search title from the network. It's using the NetworkManager to fetch the data.
-    func fetchMovies() {
-        Task { @MainActor in
-            do {
-                let result = await NetworkManager.shared.fetchFilms(with: viewModel.movieTitle)
-                
-                switch result {
-                case .success(let fetchedMovies):
-                    self.viewModel.movies = fetchedMovies
-                    applySnapshot()
-                case .failure(let error):
-                    DispatchQueue.main.async { [weak self] in
-                        let ac = UIAlertController(title: "Oops!",
-                                                   message: error.userFriendlyDescription,
-                                                   preferredStyle: .alert)
-                        ac.addAction(UIAlertAction(title: "OK", style: .default, handler: self?.returnToSearchVC))
-                        self?.present(ac, animated: true)
-                        print("Error fetching movies: \(error)")
-                    }
-                }
-            }
-        }
-    }
-    
-    // The applySnapshot method is updating the UICollectionViewDiffableDataSource with the fetched movies.
-    func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
-        snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.movies, toSection: .main)
-        dataSource?.apply(snapshot)
-    }
-    
-    func returnToSearchVC(action: UIAlertAction! = nil) {
-        navigationController?.popViewController(animated: true)
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = viewModel.movies[indexPath.item]
         let movieVM = MMMovieVM(id: selectedMovie.id)
         let movieVC = MMMovieVC(viewModel: movieVM)
         navigationController?.pushViewController(movieVC, animated: true)
+    }
+}
+
+extension MMCollectionVC: MMCollectionVM.Delegate {
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.movies, toSection: .main)
+        dataSource?.apply(snapshot)
     }
 }

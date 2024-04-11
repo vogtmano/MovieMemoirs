@@ -50,7 +50,7 @@ private extension MMSearchVM {
         }
         
         let viewModel = MMCollectionVM()
-        let collection = CollectionVC(viewModel: viewModel)
+        let collection = MMCollectionVC(viewModel: viewModel)
         viewModel.navigationController = navigationController
         collection.viewModel.movieTitle = title
         

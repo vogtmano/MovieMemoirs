@@ -107,6 +107,7 @@ class MMSearchVC: UIViewController {
         if textField.isFirstResponder {
             textField.resignFirstResponder()
         }
+        
         viewModel.handle(.symbolTapped(textField.text))
     }
     

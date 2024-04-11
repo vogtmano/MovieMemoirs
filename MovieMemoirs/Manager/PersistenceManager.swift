@@ -27,8 +27,8 @@ class PersistenceManager {
         }
     }
     
-    func saveMovie(movieTitle: String, poster: String, year: String) {
-        let movieToBeSaved = MovieThumbnail(title: movieTitle, poster: poster, id: UUID().uuidString, year: year)
+    func saveMovie(movieTitle: String, poster: String, id: String, year: String) {
+        let movieToBeSaved = MovieThumbnail(title: movieTitle, poster: poster, id: id, year: year)
         context?.insert(movieToBeSaved)
     }
     
