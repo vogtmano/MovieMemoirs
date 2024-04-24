@@ -1,13 +1,13 @@
 //
-//  Favourites.swift
+//  MMWatchlistVC.swift
 //  MovieMemoirs
 //
-//  Created by Maks Vogtman on 11/08/2023.
+//  Created by Maks Vogtman on 18/04/2024.
 //
 
 import UIKit
 
-@MainActor class MMFavouritesVC: UIViewController {
+@MainActor class MMWatchlistVC: UIViewController {
     enum Section {
         case main
     }
@@ -22,7 +22,7 @@ import UIKit
     let movieTitle = MMLabel()
 
     var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail.ID>?
-    let viewModel: MMFavouritesVM
+    let viewModel: MMWatchlistVM
     
     lazy var listLayout = UICollectionViewCompositionalLayout { _, layoutEnvironment in
         var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -47,7 +47,7 @@ import UIKit
         return section
     }
     
-    init(viewModel: MMFavouritesVM) {
+    init(viewModel: MMWatchlistVM) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
         viewModel.delegate = self
@@ -59,7 +59,7 @@ import UIKit
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Favourite Movies"
+        title = "Watchlist"
         setRightBarButtonItem()
         configureDataSource()
     }
@@ -76,7 +76,7 @@ import UIKit
     }
     
     @objc func shareTapped() {
-        let shareTitle = "Check out my Favourite Movies!"
+        let shareTitle = "Check out my Watchlist!"
         let movieTitlesWithYears = viewModel.movies.map { "\($0.title) (\($0.year))" }.joined(separator: "\n")
         let shareMessage = """
         \(shareTitle)
@@ -110,7 +110,7 @@ import UIKit
     }
 }
 
-extension MMFavouritesVC: UICollectionViewDelegate {
+extension MMWatchlistVC: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedMovie = viewModel.movies[indexPath.item]
         let movieVM = MMMovieVM(id: selectedMovie.id)
@@ -119,7 +119,7 @@ extension MMFavouritesVC: UICollectionViewDelegate {
     }
 }
 
-extension MMFavouritesVC: MMFavouritesVM.Delegate {
+extension MMWatchlistVC: MMWatchlistVM.Delegate {
     func presentAlert() {
         let ac = UIAlertController(title: "Oops!",
                                    message: MMError.badResponse.userFriendlyDescription,

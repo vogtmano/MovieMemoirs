@@ -10,6 +10,11 @@ import SwiftData
 
 @MainActor
 class PersistenceManager {
+    enum ListType {
+        case favourites
+        case watchlist
+    }
+    
     static let shared = PersistenceManager()
     var container: ModelContainer?
     var context: ModelContext?
@@ -28,8 +33,17 @@ class PersistenceManager {
         }
     }
     
-    func saveMovie(movieTitle: String, poster: String, id: String, year: String) {
-        let movieToBeSaved = MovieThumbnail(title: movieTitle, poster: poster, id: id, year: year)
+    func saveMovie(movieTitle: String, 
+                   poster: String,
+                   id: String,
+                   year: String,
+                   listType: ListType) {
+        let movieToBeSaved = MovieThumbnail(title: movieTitle,
+                                            poster: poster,
+                                            id: id,
+                                            year: year,
+                                            isFavourite: listType == .favourites ? true : false,
+                                            isOnWatchlist: listType == .watchlist ? true : false)
         context?.insert(movieToBeSaved)
     }
     
@@ -46,7 +60,7 @@ class PersistenceManager {
         }
     }
     
-    func updateFavourites(with movies: [MovieThumbnail]) {
+    func updateMoviesList(with movies: [MovieThumbnail]) {
         let descriptor = FetchDescriptor<MovieThumbnail>()
         do {
             guard let existingMovies = try? context?.fetch(descriptor) else { return }

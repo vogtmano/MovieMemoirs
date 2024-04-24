@@ -12,7 +12,7 @@ class MMCollectionVC: UICollectionViewController {
         case main
     }
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail>?
+    var dataSource: UICollectionViewDiffableDataSource<Section, MovieThumbnail.ID>?
     let viewModel: MMCollectionVM
     
     init(viewModel: MMCollectionVM) {
@@ -56,8 +56,9 @@ class MMCollectionVC: UICollectionViewController {
             }
         }
         
-        dataSource = UICollectionViewDiffableDataSource<Section, MovieThumbnail>(collectionView: collectionView) { collectionView, indexPath, movie in
-            collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: movie)
+        dataSource = UICollectionViewDiffableDataSource<Section, MovieThumbnail.ID>(collectionView: collectionView) { [weak self] collectionView, indexPath, _ in
+            let movie = self?.viewModel.movies[indexPath.item]
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: movie)
         }
     }
     
@@ -71,9 +72,9 @@ class MMCollectionVC: UICollectionViewController {
 
 extension MMCollectionVC: MMCollectionVM.Delegate {
     func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, MovieThumbnail.ID>()
         snapshot.appendSections([.main])
-        snapshot.appendItems(viewModel.movies, toSection: .main)
+        snapshot.appendItems(viewModel.movies.map { $0.id }, toSection: .main)
         dataSource?.apply(snapshot)
     }
 }

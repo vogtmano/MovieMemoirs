@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MMMovieVC: UIViewController {
+@MainActor class MMMovieVC: UIViewController {
     var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -23,6 +23,8 @@ class MMMovieVC: UIViewController {
         return stack
     }()
     
+    var eyeButton = UIBarButtonItem()
+    var starButton = UIBarButtonItem()
     let posterImage = UIImageView()
     let plotTextView = MMLabel()
     let viewModel: MMMovieVM
@@ -45,9 +47,9 @@ class MMMovieVC: UIViewController {
     }
     
     func setRightBarButtonItem() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
-                                                            target: self,
-                                                            action: #selector(addToFavourites))
+        eyeButton = UIBarButtonItem(image: UIImage(systemName: "eye"), style: .plain, target: self, action: #selector(saveToWatchlist))
+        starButton = UIBarButtonItem(image: UIImage(systemName: "star"), style: .plain, target: self, action: #selector(addToFavourites))
+        navigationItem.rightBarButtonItems = [eyeButton, starButton]
     }
     
     @objc func addToFavourites() {
@@ -56,30 +58,23 @@ class MMMovieVC: UIViewController {
             if decodedFavourites.contains(where: { movie in
                 viewModel.movie?.imdbID == movie.id
             }) {
-                let ac = UIAlertController(title: "Already in Favourites",
-                                           message: "That movie is already in your Favourites list",
-                                           preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "OK", style: .default))
-                present(ac, animated: true)
+                
             } else {
-                let ac = UIAlertController(title: "Add to Favourites",
-                                           message: "Would you want to add that movie to your Favourites list?",
-                                           preferredStyle: .alert)
-                ac.addAction(UIAlertAction(title: "Yes", style: .default, handler: saveToFavourites))
-                ac.addAction(UIAlertAction(title: "No", style: .cancel))
-                present(ac, animated: true)
+                saveToFavourites()
+                starButton.image = UIImage(systemName: "star.fill")
             }
         } catch {
             presentAlert()
         }
     }
     
-    @objc func saveToFavourites(action: UIAlertAction) {
+    func saveToFavourites() {
         guard let movie = self.viewModel.movie else { return }
         PersistenceManager.shared.saveMovie(movieTitle: movie.title,
                                             poster: movie.posterUrl,
                                             id: movie.imdbID,
-                                            year: movie.year)
+                                            year: movie.year, 
+                                            listType: .favourites)
         let ac = UIAlertController(title: "Added to Favourites",
                                    message: "The movie has been added to your Favourites list",
                                    preferredStyle: .actionSheet)
@@ -88,6 +83,30 @@ class MMMovieVC: UIViewController {
                                   withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .light))
         ac.view.addSubview(imageView)
         present(ac, animated: true)
+        
+        let deadline = DispatchTime.now() + 1.5
+        DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
+            self?.dismiss(animated: true)
+        }
+    }
+    
+    @objc func saveToWatchlist() {
+        guard let movie = self.viewModel.movie else { return }
+        PersistenceManager.shared.saveMovie(movieTitle: movie.title,
+                                            poster: movie.posterUrl,
+                                            id: movie.imdbID,
+                                            year: movie.year, 
+                                            listType: .watchlist)
+        let ac = UIAlertController(title: "Added to Watchlist",
+                                   message: "The movie has been added to your Watchlist",
+                                   preferredStyle: .actionSheet)
+        let imageView = UIImageView(frame: CGRect(x: 10, y: 30, width: 35, height: 25))
+        imageView.image = UIImage(systemName: "eye.fill",
+                                  withConfiguration: UIImage.SymbolConfiguration(pointSize: 35, weight: .light))
+        ac.view.addSubview(imageView)
+        present(ac, animated: true)
+        
+        eyeButton.image = UIImage(systemName: "eye.fill")
         
         let deadline = DispatchTime.now() + 1.5
         DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in

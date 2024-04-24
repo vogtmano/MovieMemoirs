@@ -7,8 +7,8 @@
 
 import UIKit
 
-class MMCollectionVM {
-    protocol Delegate: AnyObject {
+@MainActor class MMCollectionVM {
+    @MainActor protocol Delegate: AnyObject {
         func applySnapshot()
     }
     

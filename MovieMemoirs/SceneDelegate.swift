@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     func configureTabBarControler() -> UITabBarController {
         let tabBar = UITabBarController()
-        tabBar.viewControllers = [configureSearchNC(), configureFavouritesNC()]
+        tabBar.viewControllers = [configureSearchNC(), configureFavouritesNC(), configureWatchlistNC()]
         return tabBar
     }
     
@@ -43,6 +43,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let favVC = MMFavouritesVC(viewModel: viewModel)
         favVC.tabBarItem = UITabBarItem(tabBarSystemItem: .favorites, tag: 1)
         let navigationController = UINavigationController(rootViewController: favVC)
+        viewModel.navigationController = navigationController
+        return navigationController
+    }
+    
+    func configureWatchlistNC() -> UINavigationController {
+        let viewModel = MMWatchlistVM()
+        let watchlistVC = MMWatchlistVC(viewModel: viewModel)
+        watchlistVC.tabBarItem = UITabBarItem(title: "Watchlist", image: UIImage(systemName: "list.bullet"), tag: 2)
+        let navigationController = UINavigationController(rootViewController: watchlistVC)
         viewModel.navigationController = navigationController
         return navigationController
     }

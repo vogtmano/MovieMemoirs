@@ -1,13 +1,13 @@
 //
-//  MMFavouritesVM.swift
+//  MMWatchlistVM.swift
 //  MovieMemoirs
 //
-//  Created by Maks Vogtman on 18/01/2024.
+//  Created by Maks Vogtman on 18/04/2024.
 //
 
 import UIKit
 
-@MainActor class MMFavouritesVM {
+@MainActor class MMWatchlistVM {
     @MainActor protocol Delegate: AnyObject {
         func presentAlert()
         func didFetchMovieDetails(film: Movie)
@@ -31,7 +31,7 @@ import UIKit
     }
 }
 
-private extension MMFavouritesVM {
+private extension MMWatchlistVM {
     func downloadMovies() {
         Task { @MainActor in
             do {

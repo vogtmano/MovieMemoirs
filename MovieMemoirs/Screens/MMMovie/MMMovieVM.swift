@@ -7,8 +7,8 @@
 
 import UIKit
 
-class MMMovieVM {
-    protocol Delegate: AnyObject {
+@MainActor class MMMovieVM {
+    @MainActor protocol Delegate: AnyObject {
         func presentAlert()
         func didFetchMovieDetails(film: Movie)
         func didFetchPoster(poster: UIImage)

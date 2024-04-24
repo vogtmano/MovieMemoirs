@@ -8,8 +8,8 @@
 import UIKit
 import OSLog
 
-class MMSearchVM {
-    protocol Delegate: AnyObject {
+@MainActor class MMSearchVM {
+    @MainActor protocol Delegate: AnyObject {
         func presentAlert()
         func setImageTransformToIdentity()
         func setImage(to transform: CGAffineTransform)
@@ -45,7 +45,10 @@ class MMSearchVM {
 private extension MMSearchVM {
     func startAutomaticAnimation() {
         if timer == nil || !(timer?.isValid ?? true) {
-            timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { [weak self] _ in self?.performAnimation()
+            timer = Timer.scheduledTimer(withTimeInterval: 2.5, repeats: true) { _ in
+                Task { @MainActor [weak self] in
+                    self?.performAnimation()
+                }
             }
         }
     }

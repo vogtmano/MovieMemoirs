@@ -10,6 +10,9 @@
 		84027FE32B31BA3000A6D90B /* MMCollectionVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84027FE22B31BA3000A6D90B /* MMCollectionVM.swift */; };
 		84153CCD2BC7FB89006759F7 /* MMMovieStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84153CCC2BC7FB89006759F7 /* MMMovieStackView.swift */; };
 		84153CCF2BC7FBE7006759F7 /* MMLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84153CCE2BC7FBE7006759F7 /* MMLabel.swift */; };
+		8419D95D2BD1337D00224D8C /* MMWatchlistVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419D95C2BD1337D00224D8C /* MMWatchlistVC.swift */; };
+		8419D9652BD1348200224D8C /* MMWatchlistVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419D9642BD1348200224D8C /* MMWatchlistVM.swift */; };
+		8419D9672BD137A700224D8C /* MMCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8419D9662BD137A700224D8C /* MMCollectionVC.swift */; };
 		84338FD62B595DEA0099C4AA /* MMFavouritesVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84338FD52B595DEA0099C4AA /* MMFavouritesVM.swift */; };
 		84422A3F2BC56695004669B6 /* PersistenceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84422A3E2BC56695004669B6 /* PersistenceManager.swift */; };
 		84422A432BC5810D004669B6 /* MMError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84422A422BC5810D004669B6 /* MMError.swift */; };
@@ -21,7 +24,6 @@
 		845A68DE2A83A3FD00F14E2E /* MovieMemoirsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A68DD2A83A3FD00F14E2E /* MovieMemoirsTests.swift */; };
 		845A68E82A83A3FD00F14E2E /* MovieMemoirsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A68E72A83A3FD00F14E2E /* MovieMemoirsUITests.swift */; };
 		845A68EA2A83A3FD00F14E2E /* MovieMemoirsUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845A68E92A83A3FD00F14E2E /* MovieMemoirsUITestsLaunchTests.swift */; };
-		847215152A865D1600295C51 /* MMCollectionVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847215142A865D1600295C51 /* MMCollectionVC.swift */; };
 		847215172A865D4800295C51 /* MMFavouritesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 847215162A865D4800295C51 /* MMFavouritesVC.swift */; };
 		84762D832B35C14D003BD214 /* MMMovieVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84762D822B35C14D003BD214 /* MMMovieVM.swift */; };
 		84837ED32A9E1FCE002AEFC2 /* MMMovieVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84837ED22A9E1FCE002AEFC2 /* MMMovieVC.swift */; };
@@ -52,6 +54,9 @@
 		84027FE22B31BA3000A6D90B /* MMCollectionVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMCollectionVM.swift; sourceTree = "<group>"; };
 		84153CCC2BC7FB89006759F7 /* MMMovieStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMMovieStackView.swift; sourceTree = "<group>"; };
 		84153CCE2BC7FBE7006759F7 /* MMLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMLabel.swift; sourceTree = "<group>"; };
+		8419D95C2BD1337D00224D8C /* MMWatchlistVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMWatchlistVC.swift; sourceTree = "<group>"; };
+		8419D9642BD1348200224D8C /* MMWatchlistVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMWatchlistVM.swift; sourceTree = "<group>"; };
+		8419D9662BD137A700224D8C /* MMCollectionVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MMCollectionVC.swift; sourceTree = "<group>"; };
 		84338FD52B595DEA0099C4AA /* MMFavouritesVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMFavouritesVM.swift; sourceTree = "<group>"; };
 		84422A3E2BC56695004669B6 /* PersistenceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceManager.swift; sourceTree = "<group>"; };
 		84422A422BC5810D004669B6 /* MMError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMError.swift; sourceTree = "<group>"; };
@@ -67,7 +72,6 @@
 		845A68E32A83A3FD00F14E2E /* MovieMemoirsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MovieMemoirsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		845A68E72A83A3FD00F14E2E /* MovieMemoirsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieMemoirsUITests.swift; sourceTree = "<group>"; };
 		845A68E92A83A3FD00F14E2E /* MovieMemoirsUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieMemoirsUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		847215142A865D1600295C51 /* MMCollectionVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMCollectionVC.swift; sourceTree = "<group>"; };
 		847215162A865D4800295C51 /* MMFavouritesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMFavouritesVC.swift; sourceTree = "<group>"; };
 		84762D822B35C14D003BD214 /* MMMovieVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMMovieVM.swift; sourceTree = "<group>"; };
 		84837ED22A9E1FCE002AEFC2 /* MMMovieVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMMovieVC.swift; sourceTree = "<group>"; };
@@ -105,7 +109,7 @@
 		84027FDF2B31B9B400A6D90B /* MMCollection */ = {
 			isa = PBXGroup;
 			children = (
-				847215142A865D1600295C51 /* MMCollectionVC.swift */,
+				8419D9662BD137A700224D8C /* MMCollectionVC.swift */,
 				84027FE22B31BA3000A6D90B /* MMCollectionVM.swift */,
 			);
 			path = MMCollection;
@@ -144,6 +148,15 @@
 				84422A422BC5810D004669B6 /* MMError.swift */,
 			);
 			path = Error;
+			sourceTree = "<group>";
+		};
+		8419D9632BD133F700224D8C /* MMWatchlist */ = {
+			isa = PBXGroup;
+			children = (
+				8419D95C2BD1337D00224D8C /* MMWatchlistVC.swift */,
+				8419D9642BD1348200224D8C /* MMWatchlistVM.swift */,
+			);
+			path = MMWatchlist;
 			sourceTree = "<group>";
 		};
 		845A68BA2A83A3FC00F14E2E = {
@@ -208,6 +221,7 @@
 				84027FDF2B31B9B400A6D90B /* MMCollection */,
 				84027FE02B31B9E400A6D90B /* MMMovie */,
 				84027FE12B31B9FA00A6D90B /* MMFavorites */,
+				8419D9632BD133F700224D8C /* MMWatchlist */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -379,6 +393,7 @@
 				84153CCD2BC7FB89006759F7 /* MMMovieStackView.swift in Sources */,
 				84837ED52A9E23FA002AEFC2 /* NetworkManager.swift in Sources */,
 				84422A3F2BC56695004669B6 /* PersistenceManager.swift in Sources */,
+				8419D9672BD137A700224D8C /* MMCollectionVC.swift in Sources */,
 				8484812B2B975D2000E5ABA8 /* UIImageView ext.swift in Sources */,
 				84837ED72A9E28C9002AEFC2 /* MovieImplementation.swift in Sources */,
 				84027FE32B31BA3000A6D90B /* MMCollectionVM.swift in Sources */,
@@ -386,13 +401,14 @@
 				84153CCF2BC7FBE7006759F7 /* MMLabel.swift in Sources */,
 				845A68CB2A83A3FC00F14E2E /* MMSearchVC.swift in Sources */,
 				845A68C72A83A3FC00F14E2E /* AppDelegate.swift in Sources */,
+				8419D9652BD1348200224D8C /* MMWatchlistVM.swift in Sources */,
 				84338FD62B595DEA0099C4AA /* MMFavouritesVM.swift in Sources */,
 				845A68C92A83A3FC00F14E2E /* SceneDelegate.swift in Sources */,
 				84837ED32A9E1FCE002AEFC2 /* MMMovieVC.swift in Sources */,
 				84422A432BC5810D004669B6 /* MMError.swift in Sources */,
 				84C9BCE42B307C640035991A /* MMSearchVM.swift in Sources */,
 				847215172A865D4800295C51 /* MMFavouritesVC.swift in Sources */,
-				847215152A865D1600295C51 /* MMCollectionVC.swift in Sources */,
+				8419D95D2BD1337D00224D8C /* MMWatchlistVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -582,6 +598,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Vogtman.MovieMemoirs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -611,6 +628,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Vogtman.MovieMemoirs;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

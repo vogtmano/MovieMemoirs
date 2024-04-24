@@ -7,14 +7,14 @@
 
 import UIKit
 
-class MMSearchVC: UIViewController {
+@MainActor class MMSearchVC: UIViewController {
     var imageView: UIImageView!
     var textField: UITextField!
     let viewModel: MMSearchVM
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        addGestureRecognizers()
+        addGestureRecognizer()
         addObservers()
         setLogo()
         setTextField()
@@ -45,7 +45,7 @@ class MMSearchVC: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
-    func addGestureRecognizers() {
+    func addGestureRecognizer() {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTap))
         view.addGestureRecognizer(tapGesture)
     }
